@@ -75,7 +75,7 @@ async function bubbleSort(delay = 0) {
         swapAnimation(blockContainer.children[j], blockContainer.children[j + 1]);
         blockContainer.children[j].style.backgroundColor = "#58B7FF"; // This will turn the blocks back to blue
         blockContainer.children[j + 1].style.backgroundColor = "#58B7FF";
-
+  
       } else {
         blockContainer.children[j].style.backgroundColor = "#58B7FF"; // This will turn the blocks back to blue
         blockContainer.children[j + 1].style.backgroundColor = "#58B7FF";
