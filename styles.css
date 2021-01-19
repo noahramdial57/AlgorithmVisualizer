@@ -38,9 +38,9 @@ li a:hover {
 }
 
 .block {
-  width: 28px;
+  width: 5px;
   position: absolute;
-  left: -230px;
+  left: -250px;
   bottom: -150px;
   background-color: #55a9e9;
   transition: 0.2s all ease;

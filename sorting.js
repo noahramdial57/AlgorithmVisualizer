@@ -1,113 +1,143 @@
 let blockContainer = document.querySelector(".block-container");
-let numBlocks = 35;
+let blocks = document.querySelectorAll(".block")
+// 110
+let numBlocks = 110;
 let min = 1;
-let max = 150;
-let blockPositions = [];
+let max = 500;
 
 // This will generate blocks with a loop and their corresponding values
-// The values of each block will determine the size of the block
-function generateBlocks() {
+// The values of each block will just be its height
+let generateBlocks = () => {
   for (let i = 0; i < numBlocks; i = i + 1) {
     // Every loop this create a random number between min and max
     let blockValue = Math.floor(Math.random() * (max - min) + min)
     // This generates each block with its corresponding size
-
     let block = document.createElement("div");
     block.classList.add("block");
-    block.style.height = `${blockValue * 3}px`;
-    block.style.transform = `translateX(${i * 30}px)`;
-    blockPositions.push(i * 30);
-    // This assigns a label to each block
+    block.style.height = `${blockValue}px`;
+    block.style.transform = `translateX(${i * 10}px)`;
 
-    let blockLabel = document.createElement("label");
-    blockLabel.classList.add("block__id");
-    blockLabel.innerHTML = blockValue;
-
-    block.appendChild(blockLabel);
     blockContainer.appendChild(block);
   }
 }
 
-// this is my selection sort implementation
-
 function swapNodes(element1, element2) {
-    var clonedElement1 = element1.cloneNode(true);
-    var clonedElement2 = element2.cloneNode(true);
+  var clonedElement1 = element1.cloneNode(true);
+  var clonedElement2 = element2.cloneNode(true);
 
-    element2.parentNode.replaceChild(clonedElement1, element2);
-    element1.parentNode.replaceChild(clonedElement2, element1);
+  element2.parentNode.replaceChild(clonedElement1, element2);
+  element1.parentNode.replaceChild(clonedElement2, element1);
 }
 
-function swapAnimation(i, min) {
-  let a = blockContainer.children[i];
-  let b = blockContainer.children[min];
+// The animation will be performed by swapping the transform style of two blocks
+// Them we'll manipulate the dom using insertBefore to swap two nodes
+async function swapAnimation(element1, element2) {
+  return new Promise(resolve => {
+    el1Styles = window.getComputedStyle(element1);
+    el2Styles = window.getComputedStyle(element2);
 
+    el1Ani = el1Styles.getPropertyValue("transform");
+    el2Ani = el2Styles.getPropertyValue("transform");
 
-  // Here we are updating our blockPositions array
- // let temp = blockPositions[i];
-  //blockPositions[i] = blockPositions[min];
-  //blockPositions[min] = temp;
+    element1.style.transform = el2Ani;
+    element2.style.transform = el1Ani;
 
-  anime({
-    targets: a,
-    translateX: [blockPositions[i], blockPositions[min]],
-    delay: 900
-  });
+    swapNodes(element1, element2);
 
-  anime({
-    targets: b,
-    translateX: [blockPositions[min], blockPositions[i]],
-    delay: 900
-  });
-}
-
-function selectionSort(delay = 0) {
-  for (i = 0; i < numBlocks; i++) {
-    let min = i;
-    for (j = i + 1; j < numBlocks; j++) {
-
-      let elem1 = Number(blockContainer.children[j].innerText);
-      let elem2 = Number(blockContainer.children[min].innerText);
-
-      if (elem1 < elem2) {
-        min = j; // We are increasing the index by one each time to cover all elements
-      }
-    }
-
-    new Promise(resolve =>
+    window.requestAnimationFrame(function () {
       setTimeout(() => {
+        blockContainer.insertBefore(el2, el1);
         resolve();
-      }, delay)
-    );
-
-    swapAnimation(i, min); // this swap function handles the animation
-
-  }
+      }, 0);
+    });
+  });
 }
 
-let blocks = document.querySelectorAll(".block");
-console.log(blocks);
+async function bubbleSort(delay = 0) {
+  for (let i = 0; i < numBlocks - 1; i++) {
+    for (let j = 0; j < numBlocks - i - 1; j += 1) {
 
-async function bubbleSort(delay = 600) {
-  for (let i = 0; i < numBlocks; i++) {
+      blockContainer.children[j].style.backgroundColor = "#9932CC";
+      blockContainer.children[j + 1].style.backgroundColor = "#9932CC";
 
-    for (let j = 0; j < numBlocks; j++) {
-
-      let elem1 = Number(blockContainer.children[j].innerText);
-      let elem2 = Number(blockContainer.children[j + 1].innerText);
+      let elem1 = blockContainer.children[j].offsetHeight;
+      let elem2 = blockContainer.children[j + 1].offsetHeight;
 
       if (elem1 > elem2) {
-        swapNodes(blockContainer.children[j], blockContainer.children[j + 1]);
-        
+
+        // This will set a delay in between animations
         await new Promise(resolve =>
           setTimeout(() => {
             resolve();
           }, delay)
         );
 
-        swapAnimation(j, j + 1);
+        swapAnimation(blockContainer.children[j], blockContainer.children[j + 1]);
+        blockContainer.children[j].style.backgroundColor = "#58B7FF"; // This will turn the blocks back to blue
+        blockContainer.children[j + 1].style.backgroundColor = "#58B7FF";
+
+      } else {
+        blockContainer.children[j].style.backgroundColor = "#58B7FF"; // This will turn the blocks back to blue
+        blockContainer.children[j + 1].style.backgroundColor = "#58B7FF";
       }
     }
+  }
+  for(let i = 0; i < numBlocks; i++){
+    blockContainer.children[i].style.backgroundColor = "#13CE66";
+    }}
+
+async function insertionSort(delay = 0) {
+  for (let i = 0; i < numBlocks; i++) {
+    let el = blockContainer.children[i].offsetHeight;
+
+    for (j = i - 1; j >= 0 && blockContainer.children[j].offsetHeight > el; j--) {
+      blockContainer.children[j].style.backgroundColor = "#9932CC";
+      blockContainer.children[j + 1].style.backgroundColor = "#9932CC";
+
+      await new Promise(resolve =>
+        setTimeout(() => {
+          resolve();
+        }, delay)
+      );
+
+      swapAnimation(blockContainer.children[j + 1], blockContainer.children[j]);
+    }
+    el = blockContainer.children[j + 1].offsetHeight;
+  }
+  for(let i = 0; i < numBlocks; i++){
+    blockContainer.children[i].style.backgroundColor = "#13CE66";
+    }
+}
+
+async function selectionSort(delay = 100) {
+  for (i = 0; i < numBlocks; i++) {
+    let min = i;
+    for (j = i + 1; j < numBlocks; j++) {
+
+      let elem1 = blockContainer.children[j].offsetHeight;
+      let elem2 = blockContainer.children[min].offsetHeight;
+
+      if (elem1 < elem2) {
+        min = j; // We are increasing the index by one each time until we find our minimum value
+        blockContainer.children[j].style.backgroundColor = "#9932CC";
+        blockContainer.children[min].style.backgroundColor = "#9932CC";
+
+      }
+    }
+
+    await new Promise(resolve =>
+      setTimeout(() => {
+        resolve();
+      }, delay)
+    );
+
+    swapAnimation(blockContainer.children[i], blockContainer.children[min]);
+
+    blockContainer.children[i] = "#58B7FF";
+    blockContainer.children[min] = "#58B7FF";
+  }
+  for(let i = 0; i < numBlocks; i++){
+  blockContainer.children[i].style.backgroundColor = "#13CE66";
   }
 }
 
