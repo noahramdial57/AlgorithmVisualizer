@@ -1,6 +1,5 @@
 let blockContainer = document.querySelector(".block-container");
 let blocks = document.querySelectorAll(".block")
-// 110
 let numBlocks = 110;
 let min = 1;
 let max = 500;
@@ -21,6 +20,7 @@ let generateBlocks = () => {
   }
 }
 
+// This function manually swaps two nodes
 function swapNodes(element1, element2) {
   var clonedElement1 = element1.cloneNode(true);
   var clonedElement2 = element2.cloneNode(true);
@@ -29,7 +29,7 @@ function swapNodes(element1, element2) {
   element1.parentNode.replaceChild(clonedElement2, element1);
 }
 
-// The animation will be performed by swapping the transform style of two blocks
+// The animation will be performed by swapping the transform styles of two blocks
 // Them we'll manipulate the dom using insertBefore to swap two nodes
 async function swapAnimation(element1, element2) {
   return new Promise(resolve => {
@@ -43,8 +43,9 @@ async function swapAnimation(element1, element2) {
     element2.style.transform = el1Ani;
 
     swapNodes(element1, element2);
-
-    window.requestAnimationFrame(function () {
+    
+    // The purpose of this is to pause the animation when a user switches screens
+    window.requestAnimationFrame(function () { 
       setTimeout(() => {
         blockContainer.insertBefore(el2, el1);
         resolve();
