@@ -45,12 +45,3 @@ li a:hover {
   background-color: #55a9e9;
   transition: 0.2s all ease;
 }
-
-.block__id {
-  position: absolute;
-  top: -24px;
-  width: 100%;
-  text-align: center;
-  font-size: 18px;
-  color: white;
-}
