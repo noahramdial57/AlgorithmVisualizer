@@ -43,9 +43,9 @@ async function swapAnimation(element1, element2) {
     element2.style.transform = el1Ani;
 
     swapNodes(element1, element2);
-    
-    // The purpose of this is to pause the animation when a user switches screens
-    window.requestAnimationFrame(function () { 
+
+    // The purpose of this is to pause the animation when a user switches tabs
+    window.requestAnimationFrame(function () {
       setTimeout(() => {
         blockContainer.insertBefore(el2, el1);
         resolve();
@@ -76,16 +76,19 @@ async function bubbleSort(delay = 0) {
         swapAnimation(blockContainer.children[j], blockContainer.children[j + 1]);
         blockContainer.children[j].style.backgroundColor = "#58B7FF"; // This will turn the blocks back to blue
         blockContainer.children[j + 1].style.backgroundColor = "#58B7FF";
-  
+
       } else {
         blockContainer.children[j].style.backgroundColor = "#58B7FF"; // This will turn the blocks back to blue
         blockContainer.children[j + 1].style.backgroundColor = "#58B7FF";
       }
     }
   }
-  for(let i = 0; i < numBlocks; i++){
+
+  // turns all block green to indicate completion
+  for (let i = 0; i < numBlocks; i++) {
     blockContainer.children[i].style.backgroundColor = "#13CE66";
-    }}
+  }
+}
 
 async function insertionSort(delay = 0) {
   for (let i = 0; i < numBlocks; i++) {
@@ -105,9 +108,11 @@ async function insertionSort(delay = 0) {
     }
     el = blockContainer.children[j + 1].offsetHeight;
   }
-  for(let i = 0; i < numBlocks; i++){
+
+  // turns all block green to indicate completion
+  for (let i = 0; i < numBlocks; i++) {
     blockContainer.children[i].style.backgroundColor = "#13CE66";
-    }
+  }
 }
 
 async function selectionSort(delay = 100) {
@@ -137,8 +142,95 @@ async function selectionSort(delay = 100) {
     blockContainer.children[i] = "#58B7FF";
     blockContainer.children[min] = "#58B7FF";
   }
-  for(let i = 0; i < numBlocks; i++){
-  blockContainer.children[i].style.backgroundColor = "#13CE66";
+
+  // turns all block green to indicate completion
+  for (let i = 0; i < numBlocks; i++) {
+    blockContainer.children[i].style.backgroundColor = "#13CE66";
+  }
+}
+
+async function cocktailSort(delay = 0) {
+  let swapped = true;
+  let start = 0;
+  let end = numBlocks;
+
+  while (swapped == true) {
+    swapped = false;
+
+    // forwards
+    for (let i = start; i < end - 1; i++) {
+
+      blockContainer.children[i].style.backgroundColor = "#9932CC";
+      blockContainer.children[i + 1].style.backgroundColor = "#9932CC";
+
+      let elem1 = blockContainer.children[i].offsetHeight;
+      let elem2 = blockContainer.children[i + 1].offsetHeight;
+
+      if (elem1 > elem2) {
+
+        // This will set a delay in between animations
+        await new Promise(resolve =>
+          setTimeout(() => {
+            resolve();
+          }, delay)
+        );
+
+        swapAnimation(blockContainer.children[i], blockContainer.children[i + 1]);
+        blockContainer.children[i].style.backgroundColor = "#58B7FF"; // This will turn the blocks back to blue
+        blockContainer.children[i + 1].style.backgroundColor = "#58B7FF";
+        swapped = true;
+
+      } else {
+        blockContainer.children[i].style.backgroundColor = "#58B7FF"; // This will turn the blocks back to blue
+        blockContainer.children[i + 1].style.backgroundColor = "#58B7FF";
+      }
+    }
+
+    // if nothing moved, then array is sorted.
+    if (swapped == false) {
+      // turns all block green to indicate completion
+      for (let k = 0; k < numBlocks; k++) {
+        blockContainer.children[k].style.backgroundColor = "#13CE66";
+      }
+      return;
+    }
+
+    // reset the swapped value for the next iteration
+    swapped = false;
+
+    // move the end point back by one
+    end = end - 1;
+
+    // backwards
+    for (let j = end - 1; j >= start; j--) {
+      blockContainer.children[j].style.backgroundColor = "#9932CC";
+      blockContainer.children[j + 1].style.backgroundColor = "#9932CC";
+
+      let elem1 = blockContainer.children[j].offsetHeight;
+      let elem2 = blockContainer.children[j + 1].offsetHeight;
+
+      if (elem1 > elem2) {
+
+        // This will set a delay in between animations
+        await new Promise(resolve =>
+          setTimeout(() => {
+            resolve();
+          }, delay)
+        );
+
+        swapAnimation(blockContainer.children[j], blockContainer.children[j + 1]);
+        blockContainer.children[j].style.backgroundColor = "#58B7FF"; // This will turn the blocks back to blue
+        blockContainer.children[j + 1].style.backgroundColor = "#58B7FF";
+        swapped = true;
+
+
+      } else {
+        blockContainer.children[j].style.backgroundColor = "#58B7FF"; // This will turn the blocks back to blue
+        blockContainer.children[j + 1].style.backgroundColor = "#58B7FF";
+      }
+    }
+    // increase the starting point
+    start = start + 1;
   }
 }
 
