@@ -1,0 +1,59 @@
+body {
+    background-color: #333333;
+}
+
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    display: inline;
+    float: left;
+    font-size: 20px;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #111;
+}
+
+.grid {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.box {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    box-sizing: border-box;
+    border:1px solid lightseagreen; 
+}
+
+.row :hover{
+    background-color: lime;
+}
+
+#g9-18 {
+    position: absolute;
+    background-color:orange;
+}
+
+
+#g9-43 {
+    background-color: red;
+}
+
