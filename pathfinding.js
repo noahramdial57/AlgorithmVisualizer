@@ -1,7 +1,10 @@
 let gridContainer = document.querySelector(".grid");
+let startX = document.getElementById('startX').value
+let startY = document.getElementById('startY').value
+let endX = document.getElementById('endX').value
+let endY = document.getElementById('endY').value
 
 // Creating the grid 
-
 function grid() {
   var container = document.createElement("div");
   container.id = "main";
@@ -15,7 +18,7 @@ function grid() {
     for (k = 0; k < 60; k++) {
       var box = document.createElement("div");
       box.className = "box";
-      box.id = 'g' + i + '-' + k
+      box.id = 'node ' + k + '-' + i;
       row.appendChild(box);
     }
 
@@ -25,73 +28,79 @@ function grid() {
   gridContainer.appendChild(container);
 }
 
-start = document.getElementById('g9-18')
-end = document.getElementById('g9-43')
-
-function dragElement(elmnt) {
-
-  var pos1 = 0,
-    pos2 = 0,
-    pos3 = 0,
-    pos4 = 0;
-  if (document.getElementById(elmnt.id)) {
-    // if present, the header is where you move the DIV from:
-    document.getElementById(elmnt.id).onmousedown = dragMouseDown;
-  } else {
-    // otherwise, move the DIV from anywhere inside the DIV:
-    elmnt.onmousedown = dragMouseDown;
-  }
-
-  function dragMouseDown(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // get the mouse cursor position at startup:
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    document.onmouseup = closeDragElement;
-    // call a function whenever the cursor moves:
-    document.onmousemove = elementDrag;
-  }
-
-  function elementDrag(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // calculate the new cursor position:
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    // set the element's new position:
-    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-  }
-
-  function closeDragElement() {
-    // stop moving when mouse button is released:
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
-}
-
 grid();
 
+// Gets the Id of a node given a set of coordinates
+function getNodeId(x, y) {
+  let node = "node " + x + '-' + y;
+  return document.getElementById(node)
+}
 
-
-/*
-function testAnimation() {
-    for (let i = 0; i < 20; i++) {
-        let a = document.getElementById('row ' + i);
-        a.children[i].style.backgroundColor = 'red'
-
+function addEventListeners() {
+  for (i = 0; i < 20; i++) {
+    for (j = 0; j < 60; j++) {
+      let node = getNodeId(j, i);
+      node.addEventListener("mouseover", function () {
+        node.style.backgroundColor = "lime";
+      });
+      node.addEventListener("mouseout", function () {
+        node.style.backgroundColor = "lime";
+      });
+      //node.addEventListener("mousedown", function () {
+      //node.style.backgroundColor = "";
+      //});
     }
+  }
 }
 
-testAnimation();
+addEventListeners();
 
-function startColor(element){
-    element.style.color = 'blue';
+function wipeBoard() {
+  for (i = 0; i < 20; i++) {
+    for (j = 0; j < 60; j++) {
+      let node = getNodeId(j, i);
+      node.style.backgroundColor = '';
+    }
+  }
 }
 
-a = document.getElementById("col 16")
-console.log(a)
-a.addEventListener("click", startColor(a)); */
+// Sets the color of start and end node based on user input
+function setCoor() {
+  start = getNodeId(startX, startY);
+  end = getNodeId(endX, endY);
+  start.style.backgroundColor = 'orange';
+  end.style.backgroundColor = 'red';
+}
+
+setCoor()
+
+function updateCoor() {
+  // set new node values
+  let startX = document.getElementById('startX').value
+  let startY = document.getElementById('startY').value
+  let endX = document.getElementById('endX').value
+  let endY = document.getElementById('endY').value
+  start = getNodeId(startX, startY);
+  end = getNodeId(endX, endY);
+
+  // Wipe the board
+  wipeBoard();
+
+  //Set new start and end points
+  start.style.backgroundColor = 'orange';
+  end.style.backgroundColor = 'red';
+}
+
+function scanForWalls() {
+  for (i = 0; i < 20; i++) {
+    for (j = 0; j < 60; j++) {
+      let node = getNodeId(j, i);
+      if (node.style.backgroundColor == 'lime') {
+        console.log('heloo')
+        //node.className = 'wall';
+      }
+    }
+  }
+}
+
+scanForWalls();

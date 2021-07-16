@@ -2,7 +2,6 @@ body {
     background-color: #333333;
 }
 
-
 ul {
     list-style-type: none;
     margin: 0;
@@ -29,10 +28,15 @@ li a:hover {
     background-color: #111;
 }
 
+.coor {
+    text-align: center;
+    color: blanchedalmond;
+}
+
 .grid {
-  display: flex;
-  justify-content: center;
-  margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
 }
 
 .box {
@@ -40,20 +44,5 @@ li a:hover {
     width: 20px;
     height: 20px;
     box-sizing: border-box;
-    border:1px solid lightseagreen; 
+    border: 1px solid lightseagreen;
 }
-
-.row :hover{
-    background-color: lime;
-}
-
-#g9-18 {
-    position: absolute;
-    background-color:orange;
-}
-
-
-#g9-43 {
-    background-color: red;
-}
-
