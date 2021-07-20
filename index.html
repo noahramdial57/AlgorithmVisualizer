@@ -13,11 +13,11 @@
     <div class='navbar'>
         <ul>
             <li><a href="index.html">Pathfinding Visualizer</a></li>
-            <li><a href="index.html">Clear Grid</a></li>
-            <li><a onclick="scanForWalls()">Scan for Walls</a></li>
+            <li><a onclick='clearGrid()'>Clear Grid</a></li>
+            <li><a onclick='addEventListeners()'>Draw Walls</a></li>
             <li style='float:right'><a href="index.html">A*</a></li>
             <li style='float:right'><a href="index.html">Djikstra</a></li>
-            <li style='float:right'><a href="index.html">BFS</a></li>
+            <li style='float:right'><a onclick='BFS2()'>BFS</a></li>
             <li style='float:right'><a href="index.html">DFS</a></li>
 
         </ul>
@@ -30,7 +30,7 @@
             <label for='start'>End :</label>
             <input type="number" name="point" id="endX" min="0" max="59" value="39">
             <input type="number" name="point" id="endY" min="0" max="19" value="9">
-            <button type = "button" id='setCoor' onclick="updateCoor()">Set Coordinates</button>
+            <button type="button" id='setCoor' onclick="updateCoor()">Set Coordinates</button>
         </form>
 
     </div>
@@ -38,4 +38,5 @@
     <div class='grid' id='myCanvas'></div>
 </body>
 <script src="pathfinding.js"></script>
+
 </html>
