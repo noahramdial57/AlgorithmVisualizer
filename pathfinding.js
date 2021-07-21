@@ -93,9 +93,12 @@ function clearGrid() {
       let node = getNodeId(j, i);
       if (node.className == 'box box-wall') {
         node.className = 'box';
+      } else {
+        node.className = 'box'
       }
     }
   }
+  setCoor()
 }
 
 // BREADTH FIRST SEARCH
@@ -150,44 +153,6 @@ function exploreLocation(location) {
   return allNeighbors;
 }
 
-/*
-function adjNodes(x, y) {
-  let allNeighbors = [];
-  //top
-  if (safeNeighbor(x, y - 1)) allNeighbors.push({
-    x: x,
-    y: y - 1,
-    visited: false
-  });
-  //bottom
-  if (safeNeighbor(x, y + 1)) allNeighbors.push({
-    x: x,
-    y: y + 1,
-    visted: false
-  });
-  //left
-  if (safeNeighbor(x - 1, y)) allNeighbors.push({
-    x: x - 1,
-    y: y,
-    visited: false
-  });
-  //right
-  if (safeNeighbor(x + 1, y)) allNeighbors.push({
-    x: x + 1,
-    y: y,
-    visited: false
-  });
-  return allNeighbors;
-}
-
-let adjacencyMatrix = new Map();
-// for (i = 0; i < 20; i++) {
-//   for (k = 0; k < 60; k++) {
-//     adjacencyMatrix.set(k + '-' + i, adjNodes(k, i));
-//   }
-// }
-*/
-
 async function BFS(delay = 0) {
   let start = document.querySelector('.box-start')
   let end = document.querySelector('.box-end')
@@ -208,12 +173,14 @@ async function BFS(delay = 0) {
       return currentLocation;
     // else mark the node as visited
     let node = getNodeId(currentLocation.x, currentLocation.y)
-    for (i = 0; i < queue.length; i++){
-      let temp = queue.shift()
-      tempNode = getNodeId(temp.x, temp.y)
-      tempNode.className = 'box box-visited';
-    }
-    console.log(queue)
+    node.className = 'box box-visited';
+    //node.className = 'box box-visited';
+    // for (i = 0; i < queue.length; i++){
+    //   let temp = queue.shift()
+    //   tempNode = getNodeId(temp.x, temp.y)
+    //   tempNode.className = 'box box-visited';
+    // }
+    console.log(queue.length)
     await new Promise(resolve =>
       setTimeout(() => {
         resolve();
@@ -223,9 +190,45 @@ async function BFS(delay = 0) {
     for (neighbor of neighbors) {
       if (node.classList != ".box-visited" || node.classList != ".box-wall") {
         queue.push(neighbor);
-        currentLocation = getNodeId(neighbor.x, neighbor.y) 
+        currentLocation = getNodeId(neighbor.x, neighbor.y)
       }
     }
   }
   return false;
+}
+
+async function DFS(delay = 0) {
+  let start = document.querySelector('.box-start')
+  let end = document.querySelector('.box-end')
+  let startId = start.id // string
+  let endId = end.id // string
+  let endCoor = [getXaxis(endId), getYaxis(endId)]
+  let stack = []
+
+  var location = {
+    x: getXaxis(startId),
+    y: getYaxis(startId),
+  }
+
+  stack.push(location);
+  while (stack.length) {
+    let node = stack.pop();
+    let coor = getNodeId(node.x, node.y)
+    if (node.x == endCoor[0] && node.y == endCoor[1])
+      return node;
+    if (coor.classList != 'box box-visited') {
+      await new Promise(resolve =>
+        setTimeout(() => {
+          resolve();
+        }, delay)
+      );
+      coor.className = 'box box-visited';
+      var neighbors = exploreLocation(node);
+      for (neighbor of neighbors) {
+        if (node.classList != ".box-visited" || node.classList != ".box-wall") {
+          stack.push(neighbor);
+        }
+      }
+    }
+  }
 }
