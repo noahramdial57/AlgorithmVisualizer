@@ -60,7 +60,7 @@ li a:hover {
 .box-visited{
     background-color: purple;
     animation-name: visitedAnimation;
-    animation-duration: 1.2s;
+    animation-duration: 1.5s;
     animation-timing-function: ease-out;
     animation-delay: 0;
     animation-direction: alternate;

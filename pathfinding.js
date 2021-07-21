@@ -1,8 +1,4 @@
 let gridContainer = document.querySelector(".grid");
-let startX = document.getElementById('startX').value
-let startY = document.getElementById('startY').value
-let endX = document.getElementById('endX').value
-let endY = document.getElementById('endY').value
 
 // Creating the grid 
 function grid() {
@@ -35,6 +31,10 @@ function getNodeId(x, y) {
 
 // Sets the color of start and end node based on user input
 function setCoor() {
+  let startX = document.getElementById('startX').value
+  let startY = document.getElementById('startY').value
+  let endX = document.getElementById('endX').value
+  let endY = document.getElementById('endY').value
   start = getNodeId(startX, startY);
   end = getNodeId(endX, endY);
   start.className = 'box box-start'
@@ -103,156 +103,129 @@ let row = 20
 let col = 60
 
 // Pass in node id as a string
-function getRowNumber(node) {
+function getYaxis(node) { // row
   a = node.split('-')
-  return a[0]
+  return parseInt(a[1], 10)
 }
 
-function getColNumber(node) {
+function getXaxis(node) { // col
   a = node.split('-')
-  return a[1]
+  return parseInt(a[0], 10)
 }
 
-function safeNeighbor(r, c) {
-  let node = getNodeId(r, c);
-  let x = parseInt(getRowNumber(node.id), 10)
-  let y = parseInt(getColNumber(node.id), 10)
-  if (x < 0 || x > row) {
-    return false
-  }
-  if (y < 0 || y > col) {
-    return false;
-  }
-  if (node.classList == '.box-wall') {
-    return false;
-  }
+function safeNeighbor(x, y) {
+  let node = getNodeId(x, y)
+  if (y < 0 || y >= row) return false;
+  if (x < 0 || x >= col) return false;
+  if (node.className == 'box box-wall') return false;
   return true;
 }
 
 // explore all neighbors
 function exploreLocation(location) {
-  let r = parseInt(location.r, 10);
-  let c = parseInt(location.c, 10);
+  let x = parseInt(location.x, 10);
+  let y = parseInt(location.y, 10);
   let allNeighbors = [];
 
   //top
-  if (safeNeighbor(r - 1, c)) allNeighbors.push({
-    r: r - 1,
-    c: c
+  if (safeNeighbor(x, y - 1)) allNeighbors.push({
+    x: x,
+    y: y - 1
   });
   //bottom
-  if (safeNeighbor(r + 1, c)) allNeighbors.push({
-    r: r + 1,
-    c: c
+  if (safeNeighbor(x, y + 1)) allNeighbors.push({
+    x: x,
+    y: y + 1
   });
   //left
-  if (safeNeighbor(r, c - 1)) allNeighbors.push({
-    r: r,
-    c: c - 1
+  if (safeNeighbor(x - 1, y)) allNeighbors.push({
+    x: x - 1,
+    y: y
   });
   //right
-  if (safeNeighbor(r, c + 1)) allNeighbors.push({
-    r: r,
-    c: c + 1
+  if (safeNeighbor(x + 1, y)) allNeighbors.push({
+    x: x + 1,
+    y: y
   });
   return allNeighbors;
 }
 
+/*
+function adjNodes(x, y) {
+  let allNeighbors = [];
+  //top
+  if (safeNeighbor(x, y - 1)) allNeighbors.push({
+    x: x,
+    y: y - 1,
+    visited: false
+  });
+  //bottom
+  if (safeNeighbor(x, y + 1)) allNeighbors.push({
+    x: x,
+    y: y + 1,
+    visted: false
+  });
+  //left
+  if (safeNeighbor(x - 1, y)) allNeighbors.push({
+    x: x - 1,
+    y: y,
+    visited: false
+  });
+  //right
+  if (safeNeighbor(x + 1, y)) allNeighbors.push({
+    x: x + 1,
+    y: y,
+    visited: false
+  });
+  return allNeighbors;
+}
+
+let adjacencyMatrix = new Map();
+// for (i = 0; i < 20; i++) {
+//   for (k = 0; k < 60; k++) {
+//     adjacencyMatrix.set(k + '-' + i, adjNodes(k, i));
+//   }
+// }
+*/
 
 async function BFS(delay = 0) {
   let start = document.querySelector('.box-start')
   let end = document.querySelector('.box-end')
   let startId = start.id // string
   let endId = end.id // string
-  let endCoor = [getRowNumber(endId), getColNumber(endId)]
+  let endCoor = [getXaxis(endId), getYaxis(endId)]
 
   var location = {
-    r: getRowNumber(startId),
-    c: getColNumber(startId),
+    x: getXaxis(startId),
+    y: getYaxis(startId),
   }
 
   var queue = [];
   queue.push(location);
   while (queue.length) {
-    var currentLocation = queue.shift(); // shift removes first element of array and returns it
-    // check to see if we've found the end node
-    if (currentLocation.r == endCoor[0] && currentLocation.c == endCoor[1])
+    var currentLocation = queue.shift();
+    if (currentLocation.x == endCoor[0] && currentLocation.y == endCoor[1])
       return currentLocation;
     // else mark the node as visited
-    let node = getNodeId(currentLocation.r, currentLocation.c)
-    node.className = 'box box-visited';
-    var neighbors = exploreLocation(currentLocation); // neighbors is a list of all valid neighbors || this is where is breaks
+    let node = getNodeId(currentLocation.x, currentLocation.y)
+    for (i = 0; i < queue.length; i++){
+      let temp = queue.shift()
+      tempNode = getNodeId(temp.x, temp.y)
+      tempNode.className = 'box box-visited';
+    }
+    console.log(queue)
+    await new Promise(resolve =>
+      setTimeout(() => {
+        resolve();
+      }, delay)
+    );
+    var neighbors = exploreLocation(currentLocation);
     for (neighbor of neighbors) {
-      if (node.classList != ".box-visited") {
+      if (node.classList != ".box-visited" || node.classList != ".box-wall") {
         queue.push(neighbor);
-        currentLocation = getNodeId(neighbor.r, neighbor.c) // fix this
+        currentLocation = getNodeId(neighbor.x, neighbor.y) 
       }
-      await new Promise(resolve =>
-        setTimeout(() => {
-          resolve();
-        }, delay)
-      );
     }
   }
   return false;
 }
-
-var ROW = 20;
-var COL = 60;
-
-// Direction vectors
-var dRow = [-1, 0, 1, 0];
-var dCol = [0, 1, 0, -1];
-
-// Function to check if a cell is be visited or not
-function isValid(row, col) {
-  // If cell lies out of bounds
-  if (row < 0 || col < 0 || row >= ROW || col >= COL)
-    return false;
-
-  // If cell is already visited
-  node = getNodeId(row, col)
-  if (node.classList = 'box-visited')
-    return false;
-
-  // Otherwise
-  return true;
-}
-
-function BFS2(row, col) {
-  var q = [];
-
-  // Mark the starting cell as visited and push it into the queue
-  q.push([row, col]);
-  let node = getNodeId(row, col)
-  console.log(node)
-  node.className = 'box box-visited';
-
-  // Iterate while the queue is not empty
-  while (q.length != 0) {
-    var cell = q[0];
-    var x = cell[0];
-    var y = cell[1];
-
-    q.shift();
-
-    // Go to the adjacent cells
-    for (var i = 0; i < 4; i++) {
-      var adjx = x + dRow[i];
-      var adjy = y + dCol[i];
-
-      if (isValid(adjx, adjy)) {
-        q.push([adjx, adjy]);
-        let node = getNodeId(adjx, adjy)
-        node.className = 'box box-visited';
-      }
-    }
-  }
-}
-
-let startpoint = document.querySelector('.box-start')
-let startId = startpoint.id // string
-starting = getNodeId(startId)
-let x = parseInt(getRowNumber(starting.id), 10)
-let y = parseInt(getColNumber(starting.id), 10)
-BFS2(x, y)
