@@ -14,9 +14,10 @@
         <ul>
             <li><a href="index.html">Pathfinding Visualizer</a></li>
             <li><a onclick='clearGrid()'>Clear Grid</a></li>
-            <li><a onclick='addEventListeners()'>Draw Walls</a></li>
+            <li><a onclick='addEventListeners()'>Draw Obstacles</a></li>
+            <li><a onclick='generateRandomObstacles()'>Generate Random Obstacles</a></li>
             <li style='float:right'><a href="index.html">A*</a></li>
-            <li style='float:right'><a href="index.html">Djikstra</a></li>
+            <li style='float:right'><a onclick='Djikstra()'>Djikstra</a></li>
             <li style='float:right'><a onclick='BFS()'>BFS</a></li>
             <li style='float:right'><a onclick='DFS()'>DFS</a></li>
 
@@ -25,11 +26,11 @@
     <div class='coor'>
         <form>
             <label for='start'>Start :</label>
-            <input type="number" name="point" id="startX" min="0" max="59" value="0">
-            <input type="number" name="point" id="startY" min="0" max="19" value="0">
+            <input type="number" name="point" id="startX" min="0" max="59" value="19">
+            <input type="number" name="point" id="startY" min="0" max="19" value="9">
             <label for='start'>End :</label>
-            <input type="number" name="point" id="endX" min="0" max="59" value="59">
-            <input type="number" name="point" id="endY" min="0" max="19" value="19">
+            <input type="number" name="point" id="endX" min="0" max="59" value="39">
+            <input type="number" name="point" id="endY" min="0" max="19" value="9">
             <button type="button" id='setCoor' onclick="updateCoor()">Set Coordinates</button>
         </form>
 

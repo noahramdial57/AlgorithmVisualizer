@@ -1,18 +1,18 @@
-let gridContainer = document.querySelector(".grid");
 
 // Creating the grid 
 function grid() {
-  var container = document.createElement("div");
+  let gridContainer = document.querySelector(".grid");
+  let container = document.createElement("div");
   container.id = "main";
   container.className = "container";
 
   for (i = 0; i < 20; i++) {
-    var row = document.createElement("div");
+    let row = document.createElement("div");
     row.className = "row";
     row.id = "row " + i;
 
     for (k = 0; k < 60; k++) {
-      var box = document.createElement("div");
+      let box = document.createElement("div");
       box.className = "box";
       box.id = k + '-' + i;
       row.appendChild(box);
@@ -54,8 +54,6 @@ function addEventListeners() {
   }
 }
 
-// TODO: Use document.querySelector without nested for-loop to wipe background colors on all nodes
-// of class .box-wall, as well as wiping .box-start and .box-end
 function wipeBoard() {
   for (i = 0; i < 20; i++) {
     for (j = 0; j < 60; j++) {
@@ -101,7 +99,41 @@ function clearGrid() {
   setCoor()
 }
 
-// BREADTH FIRST SEARCH
+/*
+function clearPath() {
+  for (i = 0; i < 20; i++) {
+    for (j = 0; j < 60; j++) {
+      let node = getNodeId(j, i);
+      if (node.style.backgroundColor == 'purple') {
+        node.style.backgroundColor = '';
+      }
+    }
+  }
+}
+*/
+
+async function generateRandomObstacles(delay = 0) {
+  clearGrid()
+  for (i = 0; i < 10; i++) {
+    for (j = 0; j < 33; j++) {
+      let randX = Math.floor(Math.random() * 60);
+      let randY = Math.floor(Math.random() * 20);
+      node = getNodeId(randX, randY)
+      if (node.classList == 'box box-start' || node.classList == 'box box-end') {
+        continue
+      } else {
+        node.className = 'box box-wall'
+      } 
+      await new Promise(resolve =>
+        setTimeout(() => {
+          resolve();
+        }, delay)
+      );
+    }
+  }
+}
+
+// BREADTH FIRST SEARCH || Depth First Search || Djiksta || A *
 let row = 20
 let col = 60
 
@@ -153,6 +185,7 @@ function exploreLocation(location) {
   return allNeighbors;
 }
 
+// does not work || its running time is too slow
 async function BFS(delay = 0) {
   let start = document.querySelector('.box-start')
   let end = document.querySelector('.box-end')
@@ -160,15 +193,15 @@ async function BFS(delay = 0) {
   let endId = end.id // string
   let endCoor = [getXaxis(endId), getYaxis(endId)]
 
-  var location = {
+  let location = {
     x: getXaxis(startId),
     y: getYaxis(startId),
   }
 
-  var queue = [];
+  let queue = [];
   queue.push(location);
   while (queue.length) {
-    var currentLocation = queue.shift();
+    let currentLocation = queue.shift();
     if (currentLocation.x == endCoor[0] && currentLocation.y == endCoor[1])
       return currentLocation;
     // else mark the node as visited
@@ -186,7 +219,7 @@ async function BFS(delay = 0) {
         resolve();
       }, delay)
     );
-    var neighbors = exploreLocation(currentLocation);
+    let neighbors = exploreLocation(currentLocation);
     for (neighbor of neighbors) {
       if (node.classList != ".box-visited" || node.classList != ".box-wall") {
         queue.push(neighbor);
@@ -197,7 +230,8 @@ async function BFS(delay = 0) {
   return false;
 }
 
-async function DFS(delay = 0) {
+// It works
+async function DFS(delay = 25) {
   let start = document.querySelector('.box-start')
   let end = document.querySelector('.box-end')
   let startId = start.id // string
@@ -205,7 +239,7 @@ async function DFS(delay = 0) {
   let endCoor = [getXaxis(endId), getYaxis(endId)]
   let stack = []
 
-  var location = {
+  let location = {
     x: getXaxis(startId),
     y: getYaxis(startId),
   }
@@ -223,7 +257,7 @@ async function DFS(delay = 0) {
         }, delay)
       );
       coor.className = 'box box-visited';
-      var neighbors = exploreLocation(node);
+      let neighbors = exploreLocation(node);
       for (neighbor of neighbors) {
         if (node.classList != ".box-visited" || node.classList != ".box-wall") {
           stack.push(neighbor);
@@ -232,3 +266,4 @@ async function DFS(delay = 0) {
     }
   }
 }
+
