@@ -1,3 +1,48 @@
+class QElement {
+  constructor(element, priority) {
+      this.element = element;
+      this.priority = priority;
+  }
+}
+
+// PriorityQueue class
+class PriorityQueue {
+  constructor() {
+      this.items = [];
+  }
+
+  enqueue(element, priority) {
+      // creating object from queue element
+      var qElement = new QElement(element, priority);
+      var contain = false;
+
+      // iterating through the entire item array to add element at the correct location of the Queue
+      for (var i = 0; i < this.items.length; i++) {
+          if (this.items[i].priority > qElement.priority) {
+              // Once the correct location is found it is enqueued
+              this.items.splice(i, 0, qElement);
+              contain = true;
+              break;
+          }
+      }
+
+      // if the element have the highest priority it is added at the end of the queue
+      if (!contain) {
+          this.items.push(qElement);
+      }
+  }
+  dequeue() {
+      // return the dequeued element and remove it. if the queue is empty returns Underflow
+      if (this.isEmpty())
+          return "Underflow";
+      return this.items.shift();
+  }
+
+  isEmpty() {
+      // return true if the queue is empty.
+      return this.items.length == 0;
+  }
+}
 
 // Creating the grid 
 function grid() {
@@ -29,7 +74,6 @@ function getNodeId(x, y) {
   return document.getElementById(node)
 }
 
-// Sets the color of start and end node based on user input
 function setCoor() {
   let startX = document.getElementById('startX').value
   let startY = document.getElementById('startY').value
@@ -40,7 +84,6 @@ function setCoor() {
   start.className = 'box box-start'
   end.className = 'box box-end'
 }
-
 setCoor()
 
 function addEventListeners() {
@@ -99,22 +142,22 @@ function clearGrid() {
   setCoor()
 }
 
-/*
 function clearPath() {
   for (i = 0; i < 20; i++) {
     for (j = 0; j < 60; j++) {
       let node = getNodeId(j, i);
-      if (node.style.backgroundColor == 'purple') {
-        node.style.backgroundColor = '';
+      if (node.classList == 'box box-wall' || node.classList == 'box box-start' || node.classList == 'box box-end') {
+        continue
+      } else {
+        node.className = 'box';
       }
     }
   }
 }
-*/
 
-async function generateRandomObstacles(delay = 0) {
+async function generateRandomObstacles(delay = 5) {
   clearGrid()
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < 11; i++) {
     for (j = 0; j < 33; j++) {
       let randX = Math.floor(Math.random() * 60);
       let randY = Math.floor(Math.random() * 20);
@@ -123,7 +166,7 @@ async function generateRandomObstacles(delay = 0) {
         continue
       } else {
         node.className = 'box box-wall'
-      } 
+      }
       await new Promise(resolve =>
         setTimeout(() => {
           resolve();
@@ -148,7 +191,7 @@ function getXaxis(node) { // col
   return parseInt(a[0], 10)
 }
 
-function safeNeighbor(x, y) {
+function isValid(x, y) {
   let node = getNodeId(x, y)
   if (y < 0 || y >= row) return false;
   if (x < 0 || x >= col) return false;
@@ -163,22 +206,22 @@ function exploreLocation(location) {
   let allNeighbors = [];
 
   //top
-  if (safeNeighbor(x, y - 1)) allNeighbors.push({
+  if (isValid(x, y - 1)) allNeighbors.push({
     x: x,
     y: y - 1
   });
   //bottom
-  if (safeNeighbor(x, y + 1)) allNeighbors.push({
+  if (isValid(x, y + 1)) allNeighbors.push({
     x: x,
     y: y + 1
   });
   //left
-  if (safeNeighbor(x - 1, y)) allNeighbors.push({
+  if (isValid(x - 1, y)) allNeighbors.push({
     x: x - 1,
     y: y
   });
   //right
-  if (safeNeighbor(x + 1, y)) allNeighbors.push({
+  if (isValid(x + 1, y)) allNeighbors.push({
     x: x + 1,
     y: y
   });
@@ -187,15 +230,13 @@ function exploreLocation(location) {
 
 // does not work || its running time is too slow
 async function BFS(delay = 0) {
-  let start = document.querySelector('.box-start')
-  let end = document.querySelector('.box-end')
-  let startId = start.id // string
-  let endId = end.id // string
-  let endCoor = [getXaxis(endId), getYaxis(endId)]
+  let start = document.querySelector('.box-start').id
+  let end = document.querySelector('.box-end').id
+  let endCoor = [getXaxis(end), getYaxis(end)]
 
   let location = {
-    x: getXaxis(startId),
-    y: getYaxis(startId),
+    x: getXaxis(start),
+    y: getYaxis(start),
   }
 
   let queue = [];
@@ -207,23 +248,18 @@ async function BFS(delay = 0) {
     // else mark the node as visited
     let node = getNodeId(currentLocation.x, currentLocation.y)
     node.className = 'box box-visited';
-    //node.className = 'box box-visited';
-    // for (i = 0; i < queue.length; i++){
-    //   let temp = queue.shift()
-    //   tempNode = getNodeId(temp.x, temp.y)
-    //   tempNode.className = 'box box-visited';
-    // }
-    console.log(queue.length)
     await new Promise(resolve =>
       setTimeout(() => {
         resolve();
       }, delay)
     );
+    console.log(queue.length)
     let neighbors = exploreLocation(currentLocation);
     for (neighbor of neighbors) {
       if (node.classList != ".box-visited" || node.classList != ".box-wall") {
         queue.push(neighbor);
         currentLocation = getNodeId(neighbor.x, neighbor.y)
+        currentLocation.className = 'box box-visited';
       }
     }
   }
@@ -233,10 +269,9 @@ async function BFS(delay = 0) {
 // It works
 async function DFS(delay = 25) {
   let start = document.querySelector('.box-start')
-  let end = document.querySelector('.box-end')
+  let end = document.querySelector('.box-end').id
   let startId = start.id // string
-  let endId = end.id // string
-  let endCoor = [getXaxis(endId), getYaxis(endId)]
+  let endCoor = [getXaxis(end), getYaxis(end)]
   let stack = []
 
   let location = {
@@ -257,6 +292,7 @@ async function DFS(delay = 25) {
         }, delay)
       );
       coor.className = 'box box-visited';
+      start.className = 'box box-start'
       let neighbors = exploreLocation(node);
       for (neighbor of neighbors) {
         if (node.classList != ".box-visited" || node.classList != ".box-wall") {
@@ -267,3 +303,48 @@ async function DFS(delay = 25) {
   }
 }
 
+/*
+function Djikstra() {
+  let start = document.querySelector('.box-start')
+  let end = document.querySelector('.box-end')
+  let startId = start.id // string
+  let endId = end.id // string
+  let endCoor = [getXaxis(endId), getYaxis(endId)]
+
+  let distances = {};
+
+  // Stores the reference to previous nodes
+  let prev = {};
+  let pq = new PriorityQueue();
+
+  // Set distances to all nodes to be infinite except startNode
+  pq.enqueue(start, 0);
+  for (i = 0; i < 20; i++) {
+    for (j = 0; j < 60; k++) {
+      let node = getNodeId(j, i)
+      if (node.classList = '.box-start') {
+        distances[start] = 0
+      } else if (node.classList = '.box-wall') {
+        continue
+      } else {
+        distances[node] = 1
+      }
+      prev[node] = null;
+
+
+      while (!pq.isEmpty()) {
+        let minNode = pq.dequeue();
+        let currNode = minNode.data;
+        let weight = minNode.priority;
+        this.edges[currNode].forEach(neighbor => {
+          let alt = distances[currNode] + neighbor.weight;
+          if (alt < distances[neighbor.node]) {
+            distances[neighbor.node] = alt;
+            prev[neighbor.node] = currNode;
+            pq.enqueue(neighbor.node, distances[neighbor.node]);
+          }
+        });
+      }
+      return distances;
+    }
+    */
