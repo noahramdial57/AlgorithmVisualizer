@@ -1,46 +1,46 @@
 class QElement {
   constructor(element, priority) {
-      this.element = element;
-      this.priority = priority;
+    this.element = element;
+    this.priority = priority;
   }
 }
 
 // PriorityQueue class
 class PriorityQueue {
   constructor() {
-      this.items = [];
+    this.items = [];
   }
 
   enqueue(element, priority) {
-      // creating object from queue element
-      var qElement = new QElement(element, priority);
-      var contain = false;
+    // creating object from queue element
+    var qElement = new QElement(element, priority);
+    var contain = false;
 
-      // iterating through the entire item array to add element at the correct location of the Queue
-      for (var i = 0; i < this.items.length; i++) {
-          if (this.items[i].priority > qElement.priority) {
-              // Once the correct location is found it is enqueued
-              this.items.splice(i, 0, qElement);
-              contain = true;
-              break;
-          }
+    // iterating through the entire item array to add element at the correct location of the Queue
+    for (var i = 0; i < this.items.length; i++) {
+      if (this.items[i].priority > qElement.priority) {
+        // Once the correct location is found it is enqueued
+        this.items.splice(i, 0, qElement);
+        contain = true;
+        break;
       }
+    }
 
-      // if the element have the highest priority it is added at the end of the queue
-      if (!contain) {
-          this.items.push(qElement);
-      }
+    // if the element have the highest priority it is added at the end of the queue
+    if (!contain) {
+      this.items.push(qElement);
+    }
   }
   dequeue() {
-      // return the dequeued element and remove it. if the queue is empty returns Underflow
-      if (this.isEmpty())
-          return "Underflow";
-      return this.items.shift();
+    // return the dequeued element and remove it. if the queue is empty returns Underflow
+    if (this.isEmpty())
+      return "Underflow";
+    return this.items.shift();
   }
 
   isEmpty() {
-      // return true if the queue is empty.
-      return this.items.length == 0;
+    // return true if the queue is empty.
+    return this.items.length == 0;
   }
 }
 
@@ -155,7 +155,7 @@ function clearPath() {
   }
 }
 
-async function generateRandomObstacles(delay = 5) {
+async function generateRandomObstacles(delay = 10) {
   clearGrid()
   for (i = 0; i < 11; i++) {
     for (j = 0; j < 33; j++) {
@@ -208,22 +208,26 @@ function exploreLocation(location) {
   //top
   if (isValid(x, y - 1)) allNeighbors.push({
     x: x,
-    y: y - 1
+    y: y - 1,
+    node: getNodeId(x, y - 1)
   });
   //bottom
   if (isValid(x, y + 1)) allNeighbors.push({
     x: x,
-    y: y + 1
+    y: y + 1,
+    node: getNodeId(x, y + 1)
   });
   //left
   if (isValid(x - 1, y)) allNeighbors.push({
     x: x - 1,
-    y: y
+    y: y,
+    node: getNodeId(x - 1, y)
   });
   //right
   if (isValid(x + 1, y)) allNeighbors.push({
     x: x + 1,
-    y: y
+    y: y,
+    node: getNodeId(x + 1, y)
   });
   return allNeighbors;
 }
@@ -240,9 +244,10 @@ async function BFS(delay = 0) {
   }
 
   let queue = [];
+  let counter = 0
   queue.push(location);
   while (queue.length) {
-    let currentLocation = queue.shift();
+    let currentLocation = queue[counter];
     if (currentLocation.x == endCoor[0] && currentLocation.y == endCoor[1])
       return currentLocation;
     // else mark the node as visited
@@ -254,9 +259,10 @@ async function BFS(delay = 0) {
       }, delay)
     );
     console.log(queue.length)
+    counter = counter + 1
     let neighbors = exploreLocation(currentLocation);
     for (neighbor of neighbors) {
-      if (node.classList != ".box-visited" || node.classList != ".box-wall") {
+      if (neighbor.node.classList != "box box-visited") {
         queue.push(neighbor);
         currentLocation = getNodeId(neighbor.x, neighbor.y)
         currentLocation.className = 'box box-visited';
