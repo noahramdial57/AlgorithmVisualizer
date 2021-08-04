@@ -42,12 +42,6 @@ class PriorityQueue {
     // return true if the queue is empty.
     return this.items.length == 0;
   }
-  front() {
-    // returns the highest priority element in the Priority queue without removing it.
-    if (this.isEmpty())
-      return "No elements in Queue";
-    return this.items[0];
-  }
   has(element) {
     for (let i = 0; i < this.items.length; i++) {
       if (element == this.items[i]) {
@@ -56,20 +50,6 @@ class PriorityQueue {
         return false
       }
     }
-  }
-  rear() {
-    // returns the lowest priority element of the queue
-    if (this.isEmpty())
-      return "No elements in Queue";
-    let rear = this.items[this.items.length - 1]
-    this.items.length = this.items.length - 1
-    return rear;
-  }
-  printPQueue() {
-    var str = "";
-    for (var i = 0; i < this.items.length; i++)
-      str += this.items[i].element + " ";
-    return str;
   }
 }
 
@@ -94,10 +74,13 @@ function grid() {
       let loc = {
         x: k,
         y: i,
-        parent: null,
+        bfsParent: null,
+        dfsParent: null,
+        dijkstraParent: null,
+        aStarParent: null,
+        dijkstraDistance: Number.MAX_VALUE,
         fScore: Number.MAX_VALUE,
-        gScore: Number.MAX_VALUE,
-        aStarParent: null
+        gScore: Number.MAX_VALUE
       }
       myMap.set(box, loc)
     }
@@ -106,7 +89,7 @@ function grid() {
   gridContainer.appendChild(container);
 }
 
-grid();
+grid()
 
 function getNodeId(x, y) {
   let node = x + '-' + y;
@@ -114,24 +97,38 @@ function getNodeId(x, y) {
 }
 
 function setCoor() {
-  let startX = document.getElementById('startX').value
-  let startY = document.getElementById('startY').value
-  let endX = document.getElementById('endX').value
-  let endY = document.getElementById('endY').value
+  let startX = 19
+  let startY = 9
+  let endX = 39
+  let endY = 9
   start = getNodeId(startX, startY);
   end = getNodeId(endX, endY);
   start.className = 'box box-start'
   end.className = 'box box-end'
+  start.setAttribute('draggable', true)
+  end.setAttribute('draggable', true)
 }
 setCoor()
 
-function addEventListeners() {
+function removeStart() {
   for (i = 0; i < 20; i++) {
     for (j = 0; j < 60; j++) {
       let node = getNodeId(j, i);
-      node.addEventListener("mouseover", function () {
-        node.className = 'box box-wall'
-      });
+      if (node.classList == 'box box-start') {
+        node.classList.remove('box-start')
+        node.setAttribute('draggable', false)
+      }
+    }
+  }
+}
+
+function removeEnd() {
+  for (i = 0; i < 20; i++) {
+    for (j = 0; j < 60; j++) {
+      let node = getNodeId(j, i);
+      if (node.classList == 'box box-end') {
+        node.classList.remove('box-end')
+      }
     }
   }
 }
@@ -150,35 +147,84 @@ function wipeBoard() {
   }
 }
 
-function updateCoor() {
-  // set new node values
-  let startX = document.getElementById('startX').value
-  let startY = document.getElementById('startY').value
-  let endX = document.getElementById('endX').value
-  let endY = document.getElementById('endY').value
-  start = getNodeId(startX, startY);
-  end = getNodeId(endX, endY);
-
-  // Wipe the board
-  wipeBoard();
-
-  //Set new start and end points
-  start.className = 'box box-start';
-  end.className = 'box box-end';
+function handleDragStart(e) {
+  e.preventDefault()
 }
+
+function handleDragEnd(e) {
+  e.dataTransfer.setData('text/plain', this);
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+}
+
+function handleDragEnter(e) {
+  e.preventDefault();
+  this.className = 'box box-over-start'
+}
+
+function handleDragLeave(e) {
+  this.classList.remove('box-over-start')
+}
+
+function handleDragDrop(e) {
+  e.preventDefault()
+  e.stopPropagation()
+  e.dataTransfer.getData('text/plain')
+  if (this.classList == 'box box-over-start') {
+    removeStart()
+    this.className = 'box box-start';
+    this.setAttribute('draggable', true)
+    this.removeEventListener('dragstart', handleDragStart)
+    this.removeEventListener('dragover', handleDragOver)
+    this.removeEventListener('dragenter', handleDragEnter)
+    this.removeEventListener('dragleave', handleDragLeave)
+    this.removeEventListener('dragend', handleDragEnd)
+
+  } else if (this.classList == 'box box-over-end') {
+    removeEnd()
+    this.className = 'box box-end';
+  }
+}
+
+function addEventListeners() {
+  for (i = 0; i < 20; i++) {
+    for (j = 0; j < 60; j++) {
+      let node = getNodeId(j, i);
+      if (node.classList == 'box box-start' || node.classList == 'box box-end') {
+        continue
+      } else {
+        // node.addEventListener("mousedown", function () {
+        //   node.className = 'box box-wall'
+        // });
+        // Start Node
+        node.addEventListener('dragstart', handleDragStart);
+        node.addEventListener('dragover', handleDragOver);
+        node.addEventListener('dragenter', handleDragEnter);
+        node.addEventListener('dragleave', handleDragLeave);
+        node.addEventListener('dragend', handleDragEnd);
+        node.addEventListener('drop', handleDragDrop);
+      }
+    }
+  }
+}
+
+addEventListeners()
 
 function clearGrid() {
   for (i = 0; i < 20; i++) {
     for (j = 0; j < 60; j++) {
       let node = getNodeId(j, i);
-      if (node.className == 'box box-wall') {
+      if (node.classList == 'box box-wall') {
         node.className = 'box';
+      } else if (node.classList == 'box box-start' || node.classList == 'box box-end') {
+        continue
       } else {
         node.className = 'box'
       }
     }
   }
-  setCoor()
 }
 
 function clearPath() {
@@ -192,7 +238,6 @@ function clearPath() {
       }
     }
   }
-  setCoor()
 }
 
 async function generateRandomObstacles(delay = 0) {
@@ -214,29 +259,6 @@ async function generateRandomObstacles(delay = 0) {
       );
     }
   }
-}
-
-/*
-function randomizeNodePos() {
-  wipeBoard()
-  let startRandX = Math.floor(Math.random() * 59);
-  let startRandY = Math.floor(Math.random() * 19);
-  let startNode = getNodeId(startRandX, startRandY)
-  let endRandX = Math.floor(Math.random() * 59);
-  let endRandY = Math.floor(Math.random() * 19);
-  let endNode = getNodeId(endRandX, endRandY)
-
-  startNode.className = 'box box-start'
-  endNode.className = 'box box-end'
-}
-*/
-
-function draggableNodes() {
-  let start = document.querySelector('.box-start').id
-  let end = document.querySelector('.box-end')
-  node.addEventListener("ondragstart", function () {
-    node.className = 'box box-wall'
-  });
 }
 
 // BREADTH FIRST SEARCH || Depth First Search || Djiksta || A *
@@ -295,58 +317,98 @@ function exploreLocation(location) {
   return allNeighbors;
 }
 
-async function findPath(delay = 50) {
+async function findPath(bfs, dfs, dijkstra, aStar) {
+  let delay = 55
   let end = document.querySelector('.box-end').id
   let endCoor = [getXaxis(end), getYaxis(end)]
   let a = myMap.get(getNodeId(endCoor[0], endCoor[1])) // works
   let path = []
-  setCoor()
 
-  for (i = 0; i < 1000; i++) {
-    parent = a.parent
-    if (parent == null) {
-      break
-    } else {
-      path.push(parent)
+  if (bfs == 1) {
+    for (i = 0; i < 1000; i++) {
+      let bfsParent = a.bfsParent
+      if (bfsParent == null) {
+        break
+      } else {
+        path.push(bfsParent)
+      }
+      a = myMap.get(bfsParent)
+      await new Promise(resolve =>
+        setTimeout(() => {
+          resolve();
+        }, delay)
+      );
+      if (path[i].classList == 'box box-start') {
+        break
+      } else {
+        path[i].className = 'box box-path'
+      }
     }
-    a = myMap.get(parent)
-    await new Promise(resolve =>
-      setTimeout(() => {
-        resolve();
-      }, delay)
-    );
-    if (path[i].classList == 'box box-start') {
-      break
-    } else {
-      path[i].className = 'box box-path'
+    path = []
+  }
+  if (aStar == 1) {
+    for (i = 0; i < 1000; i++) {
+      let aStarParent = a.aStarParent
+      if (aStarParent == null) {
+        break
+      } else {
+        path.push(aStarParent)
+      }
+      a = myMap.get(aStarParent)
+      await new Promise(resolve =>
+        setTimeout(() => {
+          resolve();
+        }, delay)
+      );
+      if (path[i].classList == 'box box-start') {
+        break
+      } else {
+        path[i].className = 'box box-path'
+      }
     }
   }
+  if (dfs == 1) {
+    for (i = 0; i < 1000; i++) {
+      let dfsParent = a.dfsParent
+      if (dfsParent == null) {
+        break
+      } else {
+        path.push(dfsParent)
+      }
+      a = myMap.get(dfsParent)
+      await new Promise(resolve =>
+        setTimeout(() => {
+          resolve();
+        }, delay)
+      );
+      if (path[i].classList == 'box box-start') {
+        break
+      } else {
+        path[i].className = 'box box-path'
+      }
+    }
+  }
+  path = []
 }
 
-async function aStarFindPath(delay = 50) {
-  let end = document.querySelector('.box-end').id
-  let endCoor = [getXaxis(end), getYaxis(end)]
-  let a = myMap.get(getNodeId(endCoor[0], endCoor[1])) // works
-  let path = []
-  setCoor()
+// The heuristic function that returns the distance between two points
+function manhattanDistance(p1, p2) {
+  let x1 = getXaxis(p1)
+  let y1 = getYaxis(p1)
+  let x2 = getXaxis(p2)
+  let y2 = getYaxis(p2)
+  return Math.abs(x1 - x2) + Math.abs(y1 - y2)
+}
 
-  for (i = 0; i < 1000; i++) {
-    parent = a.aStarParent
-    if (parent == null) {
-      break
-    } else {
-      path.push(parent)
-    }
-    a = myMap.get(parent)
-    await new Promise(resolve =>
-      setTimeout(() => {
-        resolve();
-      }, delay)
-    );
-    if (path[i].classList == 'box box-start') {
-      break
-    } else {
-      path[i].className = 'box box-path'
+// this resets all g and f score values in the map
+function reInitializeMap() {
+  for (i = 0; i < 20; i++) {
+    for (j = 0; j < 60; j++) {
+      let node = getNodeId(j, i)
+      let element = myMap.get(node)
+      element.gScore = Number.MAX_VALUE
+      element.fScore = Number.MAX_VALUE
+      element.dijkstraDistance = Number.MAX_VALUE
     }
   }
 }
@@ -362,7 +424,6 @@ async function BFS(delay = 0) {
   let queue = [];
   queue.push(location);
   let counter = 0
-
   while (queue.length) {
     let currentLocation = queue[counter];
     counter = counter + 1
@@ -372,15 +433,16 @@ async function BFS(delay = 0) {
         location = getNodeId(neighbor.x, neighbor.y)
         let a = myMap.get(location)
         let node = getNodeId(currentLocation.x, currentLocation.y)
-        a.parent = node;
-        return findPath()
+        a.bfsParent = node;
+        queue = []
+        return findPath(1, null, null, null) // bfs, dfs, dijkstra, aStar
 
       } else if (neighbor.node.classList != "box box-visited") {
         queue.push(neighbor);
         location = getNodeId(neighbor.x, neighbor.y)
         let a = myMap.get(location)
         let node = getNodeId(currentLocation.x, currentLocation.y)
-        a.parent = node;
+        a.bfsParent = node;
         location.className = 'box box-visited';
 
         await new Promise(resolve =>
@@ -399,13 +461,12 @@ async function BFS(delay = 0) {
 async function DFS(delay = 25) {
   let start = document.querySelector('.box-start')
   let end = document.querySelector('.box-end').id
-  let startId = start.id // string
   let endCoor = [getXaxis(end), getYaxis(end)]
   let stack = []
 
   let location = {
-    x: getXaxis(startId),
-    y: getYaxis(startId),
+    x: getXaxis(start.id),
+    y: getYaxis(start.id),
   }
 
   stack.push(location);
@@ -413,7 +474,7 @@ async function DFS(delay = 25) {
     let node = stack.pop();
     let coor = getNodeId(node.x, node.y)
     if (node.x == endCoor[0] && node.y == endCoor[1])
-      return node;
+      return findPath(null, 1, null, null) // bfs, dfs, dijkstra, aStar
     if (coor.classList != 'box box-visited') {
       await new Promise(resolve =>
         setTimeout(() => {
@@ -425,6 +486,7 @@ async function DFS(delay = 25) {
       let neighbors = exploreLocation(node);
       for (neighbor of neighbors) {
         if (node.classList != ".box-visited") {
+          myMap.get(neighbor.node).dfsParent = coor
           stack.push(neighbor);
         }
       }
@@ -432,80 +494,70 @@ async function DFS(delay = 25) {
   }
 }
 
-
-function Dijkstra() {
-  let start = document.querySelector('.box-start').id
-  let end = document.querySelector('.box-end').id
-  let endCoor = [getXaxis(end), getYaxis(end)]
-
-  let distances = {};
-
-  // Stores the reference to previous nodes
-  let prev = {};
-  let pq = new PriorityQueue();
-
-  // Set distances to all nodes to be infinite except startNode
-  pq.enqueue(start, 0);
-  for (i = 0; i < 20; i++) {
-    for (j = 0; j < 60; k++) {
-      let node = getNodeId(j, i)
-      if (node.classList = '.box-start') {
-        distances[start] = 0
-      } else if (node.classList = '.box-wall') {
-        continue
-      } else {
-        distances[node] = Infinity
-      }
-    }
+async function Dijkstra(delay = 0) {
+  let start = document.querySelector('.box-start')
+  let end = document.querySelector('.box-end')
+  let location = {
+    x: getXaxis(start.id),
+    y: getYaxis(start.id)
   }
+
+  let pq = new PriorityQueue();
+  pq.enqueue(start, 0);
+  myMap.get(start).dijkstraDistance = 0
 
   while (!pq.isEmpty()) {
     let minNode = pq.dequeue();
-    let currNode = minNode.data;
-    let weight = minNode.priority;
+    let currNode = minNode.element;
+
+    if (minNode == end) {
+      reInitializeMap()
+      return console.log('we found the end')
+    }
+
     // explore neighbors
-    let neighbors = exploreLocation()
+    let neighbors = exploreLocation(location)
     for (neighbor of neighbors) {
-      let alt = distances[currNode] + neighbor.weight;
-      if (alt < distances[neighbor.node]) {
-        distances[neighbor.node] = alt;
-        prev[neighbor.node] = currNode;
-        pq.enqueue(neighbor.node, distances[neighbor.node]);
+      let currNodeDist = myMap.get(currNode).dijkstraDistance
+      let h = manhattanDistance(currNode.id, neighbor.node.id)
+      let alt = currNodeDist + h
+      let str = alt + ' < ' + myMap.get(neighbor.node).dijkstraDistance
+      console.log(str)
+      if (alt < myMap.get(neighbor.node).dijkstraDistance) {
+        myMap.get(neighbor.node).dijkstraDistance = alt
+        pq.enqueue(neighbor.node, myMap.get(neighbor.node).dijkstraDistance)
+        neighbor.node.className = 'box box-visited'
+        console.log(myMap.get(neighbor.node).dijkstraDistance)
+
+        await new Promise(resolve =>
+          setTimeout(() => {
+            resolve();
+          }, delay)
+        );
       }
     }
   }
-  return distances;
+  return false
 }
 
-// The heuristic function that returns the distance between two points
-function manhattanDistance(p1, p2) {
-  let x1 = getXaxis(p1)
-  let y1 = getYaxis(p1)
-  let x2 = getXaxis(p2)
-  let y2 = getYaxis(p2)
-  return Math.abs(x1 - x2) + Math.abs(y1 - y2)
-}
-
-// f(n) = g(n) + h(n) 
 // it works
-async function aStar(delay = 0) {
+async function aStar(delay = 15) {
+  reInitializeMap()
   let start = document.querySelector('.box-start')
   let end = document.querySelector('.box-end')
   let open = new PriorityQueue();
   let init = myMap.get(start)
-  init.gScore = 0
+  init.gScore = 0;
   init.fScore = manhattanDistance(start.id, end.id)
   open.enqueue(start, init.fScore);
 
   //While there are nodes left to visit
   while (!open.isEmpty()) {
     // find the node with the currently lowest priority
-    let currentNode = open.dequeue().element    
+    let currentNode = open.dequeue().element
     if (currentNode.classList == 'box box-end') {
-      aStarFindPath()
-      return console.log('we found the end')
+      return findPath(null, null, null, 1) // bfs, dfs, dijkstra, aStar
     }
-
     let curr = currentNode.id
     let location = {
       x: getXaxis(curr),
@@ -518,7 +570,7 @@ async function aStar(delay = 0) {
         resolve();
       }, delay)
     );
-      
+
     let neighbors = exploreLocation(location)
     for (neighbor of neighbors) {
       let temp_gScore = myMap.get(currentNode).gScore + manhattanDistance(currentNode.id, neighbor.node.id)
@@ -535,5 +587,3 @@ async function aStar(delay = 0) {
   }
   return false
 }
-
-
