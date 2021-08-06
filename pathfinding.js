@@ -148,11 +148,7 @@ function wipeBoard() {
 }
 
 function handleDragStart(e) {
-  e.preventDefault()
-}
-
-function handleDragEnd(e) {
-  e.dataTransfer.setData('text/plain', this);
+  e.dataTransfer.setData("text/html", e.target.classList)
 }
 
 function handleDragOver(e) {
@@ -161,30 +157,30 @@ function handleDragOver(e) {
 
 function handleDragEnter(e) {
   e.preventDefault();
-  this.className = 'box box-over-start'
+  this.className = 'box box-over'
 }
 
 function handleDragLeave(e) {
-  this.classList.remove('box-over-start')
+  e.preventDefault()
+  this.classList.remove('box-over')
+}
+
+function handleDragEnd(e) {
+  e.preventDefault()
+  this.classList.remove('box-over')
 }
 
 function handleDragDrop(e) {
   e.preventDefault()
   e.stopPropagation()
-  e.dataTransfer.getData('text/plain')
-  if (this.classList == 'box box-over-start') {
-    removeStart()
-    this.className = 'box box-start';
-    this.setAttribute('draggable', true)
-    this.removeEventListener('dragstart', handleDragStart)
-    this.removeEventListener('dragover', handleDragOver)
-    this.removeEventListener('dragenter', handleDragEnter)
-    this.removeEventListener('dragleave', handleDragLeave)
-    this.removeEventListener('dragend', handleDragEnd)
+  let data = e.dataTransfer.getData("text/html")
 
-  } else if (this.classList == 'box box-over-end') {
+  if (data == 'box box-start') {
+    removeStart()
+    e.target.className = data
+  } else if (data == 'box box-end') {
     removeEnd()
-    this.className = 'box box-end';
+    e.target.className = data
   }
 }
 
@@ -192,25 +188,47 @@ function addEventListeners() {
   for (i = 0; i < 20; i++) {
     for (j = 0; j < 60; j++) {
       let node = getNodeId(j, i);
+      node.addEventListener('dragstart', handleDragStart);
+      node.addEventListener('dragover', handleDragOver);
+      node.addEventListener('dragenter', handleDragEnter);
+      node.addEventListener('dragleave', handleDragLeave);
+      node.addEventListener('dragend', handleDragEnd);
+      node.addEventListener('drop', handleDragDrop);
+    }
+  }
+}
+
+
+addEventListeners()
+
+function addObstacleEventListeners() {
+  for (i = 0; i < 20; i++) {
+    for (j = 0; j < 60; j++) {
+      let node = getNodeId(j, i);
       if (node.classList == 'box box-start' || node.classList == 'box box-end') {
         continue
       } else {
-        // node.addEventListener("mousedown", function () {
-        //   node.className = 'box box-wall'
-        // });
-        // Start Node
-        node.addEventListener('dragstart', handleDragStart);
-        node.addEventListener('dragover', handleDragOver);
-        node.addEventListener('dragenter', handleDragEnter);
-        node.addEventListener('dragleave', handleDragLeave);
-        node.addEventListener('dragend', handleDragEnd);
-        node.addEventListener('drop', handleDragDrop);
+        node.addEventListener("mouseenter", function (e) {
+          e.preventDefault()
+          node.className = 'box box-wall'
+        });
       }
     }
   }
 }
 
-addEventListeners()
+function removeObstacleEventListeners() {
+  for (i = 0; i < 20; i++) {
+    for (j = 0; j < 60; j++) {
+      let node = getNodeId(j, i);
+      if (node.classList == 'box box-start' || node.classList == 'box box-end') {
+        continue
+      } else {
+        node.removeEventListener('mouseenter')
+      }
+    }
+  }
+}
 
 function clearGrid() {
   for (i = 0; i < 20; i++) {
