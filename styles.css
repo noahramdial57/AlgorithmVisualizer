@@ -2,8 +2,6 @@ body {
     background-color: #333333;
     /* background-color: white; */
     overflow: hidden;
-    width: 100%;
-    height: 100%;
 }
 
 ul {
@@ -33,14 +31,60 @@ li a:hover {
 }
 
 .node-bar {
-    text-align: center;
-    font-size: 20px
+    margin: auto;
+    width: 50%;
+    color: white;
+}
+
+.nav-box-start {
+    width: 20px;
+    height: 20px;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 1%;
+    box-sizing: border-box;
+    background-color: orange;
+}
+
+.nav-box-end {
+    width: 20px;
+    height: 20px;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 1%;
+    box-sizing: border-box;
+    background-color: red;
+}
+
+.nav-box-wall {
+    width: 20px;
+    height: 20px;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 1%;
+    box-sizing: border-box;
+    background-color: lime;
+}
+
+.node-bar>ul {
+    list-style-type: none;
+    padding: 15px;
+    background-color: #333;
+}
+
+.node-bar>li {
+    list-style-type: none;
+    padding: 50px;
+    background-color: #333;
 }
 
 .grid {
     display: flex;
     justify-content: center;
-    margin-top: 15px;
+    margin-top: 10px;
+    margin-top: 5px;
+    width: 100%;
+    height: 90%;
 }
 
 .box {
@@ -53,18 +97,17 @@ li a:hover {
 
 .box-start {
     background-color: orange;
-    cursor: pointer;
+    cursor: grab;
 }
 
 .box-end {
     background-color: red;
-    cursor: pointer;
+    cursor: grab;
 }
 
 .box-over {
-    background-color: orange;
-    animation-name: boxOverStart;
-    animation-duration: 0.2s;
+    animation-name: boxOver;
+    animation-duration: 0.08s;
     animation-timing-function: ease-out;
     animation-delay: 0;
     animation-direction: alternate;
@@ -73,27 +116,36 @@ li a:hover {
     animation-play-state: running;
 }
 
-@keyframes boxOverStart {
+@keyframes boxOver {
     0% {
+        transform: scale(.3);
+        background-color: lightseagreen;
+    }
+
+    25% {
         transform: scale(.7);
-        background-color: gold;
+        background-color: lightseagreen;
     }
 
     50% {
         transform: scale(1.4);
-        background-color: gold;
+        background-color: lightseagreen;
+    }
+
+    75% {
+        transform: scale(1.2);
+        background-color: lightseagreen;
     }
 
     100% {
         transform: scale(1.0);
-        background-color: gold;
+        background-color: lightseagreen;
     }
 }
 
 .box-visited {
-    background-color: purple;
     animation-name: visitedAnimation;
-    animation-duration: 0.8s;
+    animation-duration: 2.5s;
     animation-timing-function: ease-out;
     animation-delay: 0;
     animation-direction: alternate;
@@ -104,12 +156,17 @@ li a:hover {
 
 @keyframes visitedAnimation {
     0% {
-        transform: scale(.1);
+        transform: scale(0.3);
         background-color: purple;
     }
 
-    50% {
-        transform: scale(1.1);
+    30% {
+        transform: scale(1.2);
+        background-color: lightseagreen;
+    }
+
+    60% {
+        transform: scale(1.6);
         background-color: gold;
     }
 
@@ -121,7 +178,7 @@ li a:hover {
 
 .box-wall {
     animation-name: wallAnimation;
-    animation-duration: 0.6s;
+    animation-duration: 0.5s;
     animation-timing-function: ease-out;
     animation-delay: 0;
     animation-direction: alternate;
@@ -132,13 +189,13 @@ li a:hover {
 
 @keyframes wallAnimation {
     0% {
-        transform: scale(1.0);
+        transform: scale(0.5);
         background-color: lime;
     }
 
     50% {
         transform: scale(1.4);
-        background-color: gold;
+        background-color: lightseagreen;
     }
 
     100% {
@@ -148,7 +205,6 @@ li a:hover {
 }
 
 .box-path {
-    background-color: purple;
     animation-name: finishedPath;
     animation-duration: 0.4s;
     animation-timing-function: ease-out;
@@ -161,13 +217,13 @@ li a:hover {
 
 @keyframes finishedPath {
     0% {
-        transform: scale(.1);
+        transform: scale(.5);
         background-color: lime;
     }
 
     50% {
-        transform: scale(1.3);
-        background-color: purple;
+        transform: scale(1.4);
+        background-color: lightseagreen;
     }
 
     100% {
