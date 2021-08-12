@@ -161,10 +161,13 @@ function handleDragOver(e) {
 }
 
 function handleDragEnter(e) {
+  let start = document.querySelector('.box-start')
+  let end = document.querySelector('.box-end')
   if (e.preventDefault()) {
     e.preventDefault
   }
 
+  let data = e.dataTransfer.getData("text/html")
   if (this.classList == 'box box-wall' || this.classList == 'box box-start' || this.classList == 'box box-end' || this.classList == 'box box-visited' || this.classList == 'box box-path') {
     return
   } else {
@@ -282,8 +285,11 @@ async function generateRandomObstacles(delay = 0) {
       if (node.classList == 'box box-start' || node.classList == 'box box-end') {
         continue
       } else {
-        node.className = 'box box-wall'
+        window.requestAnimationFrame(function () {
+          node.className = 'box box-wall'
+        });
       }
+
       await new Promise(resolve =>
         setTimeout(() => {
           resolve();
@@ -351,9 +357,8 @@ function exploreLocation(location) {
 
 async function findPath(bfs, dfs, dijkstra, aStar) {
   let delay = 55
-  let end = document.querySelector('.box-end').id
-  let endCoor = [getXaxis(end), getYaxis(end)]
-  let a = myMap.get(getNodeId(endCoor[0], endCoor[1])) // works
+  let end = document.querySelector('.box-end')
+  let a = myMap.get(end)
   let path = []
 
   if (bfs == 1) {
@@ -373,7 +378,9 @@ async function findPath(bfs, dfs, dijkstra, aStar) {
       if (path[i].classList == 'box box-start') {
         break
       } else {
-        path[i].className = 'box box-path'
+        window.requestAnimationFrame(function () {
+          path[i].className = 'box box-path'
+        });
       }
     }
   }
@@ -394,19 +401,21 @@ async function findPath(bfs, dfs, dijkstra, aStar) {
       if (path[i].classList == 'box box-start') {
         break
       } else {
-        path[i].className = 'box box-path'
+        window.requestAnimationFrame(function () {
+          path[i].className = 'box box-path'
+        });
       }
     }
   }
-  if (dfs == 1) {
-    for (let i = 0; i < 1200; i++) {
-      let dfsParent = a.dfsParent
-      if (dfsParent == null) {
+  if (dijkstra == 1) {
+    for (let i = 0; i < 1000; i++) {
+      let dijkstraParent = a.dijkstraParent
+      if (dijkstraParent == null) {
         break
       } else {
-        path.push(dfsParent)
+        path.push(dijkstraParent)
       }
-      a = myMap.get(dfsParent)
+      a = myMap.get(dijkstraParent)
       await new Promise(resolve =>
         setTimeout(() => {
           resolve();
@@ -415,12 +424,34 @@ async function findPath(bfs, dfs, dijkstra, aStar) {
       if (path[i].classList == 'box box-start') {
         break
       } else {
-        path[i].className = 'box box-path'
+        window.requestAnimationFrame(function () {
+          path[i].className = 'box box-path'
+        });
       }
     }
   }
-  path = []
+  // DFS find path
+  // I had to use this approach since backtracing was giving me problems
+  if (typeof (dfs) == 'object') {
+    dfs.reverse()
+    for (let i = 0; i < 1200; i++) {
+      await new Promise(resolve =>
+        setTimeout(() => {
+          resolve();
+        }, delay)
+      );
+
+      if (dfs[i].classList == 'box box-start') {
+        break
+      } else {
+        window.requestAnimationFrame(function () {
+          dfs[i].className = 'box box-path'
+        });
+      }
+    }
+  }
 }
+
 
 // The heuristic function that returns the distance between two points
 function manhattanDistance(p1, p2) {
@@ -455,7 +486,6 @@ function getStart() {
   }
 }
 
-// It works || running time is faster now
 async function BFS(delay = 0) {
   let start = document.querySelector('.box-start')
   let end = document.querySelector('.box-end')
@@ -467,10 +497,13 @@ async function BFS(delay = 0) {
   queue.push(location);
   let counter = 0
   let startPoint = getStart()
+
   while (queue.length) {
+    startPoint.className = 'box box-start'
     let currentLocation = queue[counter];
     counter = counter + 1
     let neighbors = exploreLocation(currentLocation);
+
     for (neighbor of neighbors) {
       if (neighbor.node == end) {
         location = getNodeId(neighbor.x, neighbor.y)
@@ -478,7 +511,6 @@ async function BFS(delay = 0) {
         let node = getNodeId(currentLocation.x, currentLocation.y)
         a.bfsParent = node;
         queue = []
-        startPoint.className = 'box box-start'
         return findPath(1, null, null, null) // bfs, dfs, dijkstra, aStar
 
       } else if (neighbor.node.classList != "box box-visited") {
@@ -487,26 +519,28 @@ async function BFS(delay = 0) {
         let a = myMap.get(location)
         let node = getNodeId(currentLocation.x, currentLocation.y)
         a.bfsParent = node;
-        location.className = 'box box-visited';
 
         await new Promise(resolve =>
           setTimeout(() => {
             resolve();
           }, delay)
         );
+
+        // window.requestAnimationFrame(function () {
+        location.className = 'box box-visited';
+        //});
       }
     }
   }
-  queue = []
   return false;
 }
 
-// It works
-async function DFS(delay = 25) {
+async function DFS(delay = 20) {
   let start = document.querySelector('.box-start')
   let startPoint = getStart()
   let end = document.querySelector('.box-end')
   let endCoor = [getXaxis(end.id), getYaxis(end.id)]
+  let path = []
   let stack = []
 
   let location = {
@@ -520,20 +554,23 @@ async function DFS(delay = 25) {
     let coor = getNodeId(node.x, node.y)
 
     if (coor.classList != 'box box-visited') {
-
       await new Promise(resolve =>
         setTimeout(() => {
           resolve();
         }, delay)
       );
 
-      coor.className = 'box box-visited';
+      window.requestAnimationFrame(function () {
+        coor.className = 'box box-visited';
+      });
+
+      path.push(coor)
+      startPoint.className = 'box box-start'
       let neighbors = exploreLocation(node);
       for (neighbor of neighbors) {
         if (neighbor.x == endCoor[0] && neighbor.y == endCoor[1]) {
-          myMap.get(end).dfsParent = coor
-          startPoint.className = 'box box-start'
-          return findPath(null, 1, null, null) // bfs, dfs, dijkstra, aStar
+          path.push(coor)
+          return findPath(null, path, null, null) // bfs, dfs, dijkstra, aStar
         }
         if (node.classList != ".box-visited") {
           myMap.get(neighbor.node).dfsParent = coor
@@ -559,25 +596,32 @@ async function Dijkstra(delay = 0) {
   while (!pq.isEmpty()) {
     let minNode = pq.dequeue();
     let currNode = minNode.element;
-
-    if (minNode == end) {
-      reInitializeMap()
-      return console.log('we found the end')
+    location = {
+      x: getXaxis(currNode.id),
+      y: getYaxis(currNode.id)
     }
 
     // explore neighbors
-    let neighbors = exploreLocation(location)
+    let neighbors = exploreLocation(location) // the problem
     for (neighbor of neighbors) {
+      if (neighbor.node == end) {
+        location = getNodeId(neighbor.x, neighbor.y)
+        let a = myMap.get(location)
+        let node = document.getElementById(currNode.id)
+        a.dijkstraParent = node
+        reInitializeMap()
+        return findPath(null, null, 1, null) // bfs, dfs, dijkstra, aStar
+      }
+
       let currNodeDist = myMap.get(currNode).dijkstraDistance
       let h = manhattanDistance(currNode.id, neighbor.node.id)
       let alt = currNodeDist + h
-      let str = alt + ' < ' + myMap.get(neighbor.node).dijkstraDistance
-      console.log(str)
       if (alt < myMap.get(neighbor.node).dijkstraDistance) {
         myMap.get(neighbor.node).dijkstraDistance = alt
         pq.enqueue(neighbor.node, myMap.get(neighbor.node).dijkstraDistance)
+        myMap.get(neighbor.node).dijkstraParent = currNode
+
         neighbor.node.className = 'box box-visited'
-        console.log(myMap.get(neighbor.node).dijkstraDistance)
 
         await new Promise(resolve =>
           setTimeout(() => {
@@ -590,8 +634,7 @@ async function Dijkstra(delay = 0) {
   return false
 }
 
-// it works
-async function aStar(delay = 15) {
+async function aStar(delay = 10) {
   reInitializeMap()
   let start = document.querySelector('.box-start')
   let startPoint = getStart()
@@ -605,9 +648,9 @@ async function aStar(delay = 15) {
   //While there are nodes left to visit
   while (!open.isEmpty()) {
     // find the node with the currently lowest priority
+    startPoint.className = 'box box-start'
     let currentNode = open.dequeue().element
     if (currentNode.classList == 'box box-end') {
-      startPoint.className = 'box box-start'
       return findPath(null, null, null, 1) // bfs, dfs, dijkstra, aStar
     }
     let curr = currentNode.id
@@ -616,7 +659,10 @@ async function aStar(delay = 15) {
       y: getYaxis(curr),
     }
 
-    currentNode.className = 'box box-visited'
+    window.requestAnimationFrame(function () {
+      currentNode.className = 'box box-visited'
+    });
+
     await new Promise(resolve =>
       setTimeout(() => {
         resolve();
