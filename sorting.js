@@ -1,6 +1,6 @@
 let blockContainer = document.querySelector(".block-container");
 let blocks = document.querySelectorAll(".block")
-let numBlocks = 145;
+let numBlocks = 100;
 let min = 5;
 let max = 80;
 
@@ -56,6 +56,18 @@ async function swapAnimation(element1, element2) {
   });
 }
 
+// turns all blocks green indicating completion
+async function completeAnimation(delay = 10) {
+  for (i = 0; i < numBlocks; i++) {
+    await new Promise(resolve =>
+      setTimeout(() => {
+        resolve();
+      }, delay)
+    );
+    blockContainer.children[i].style.backgroundColor = "#13CE66"
+  }
+}
+
 async function bubbleSort(delay = 0) {
   for (let i = 0; i < numBlocks - 1; i++) {
     for (let j = 0; j < numBlocks - i - 1; j += 1) {
@@ -87,7 +99,7 @@ async function bubbleSort(delay = 0) {
   }
 
   // turns all block green to indicate completion
-  blocks.style.backgroundColor = "#13CE66";
+  completeAnimation()
 }
 
 async function insertionSort(delay = 0) {
@@ -110,7 +122,7 @@ async function insertionSort(delay = 0) {
   }
 
   // turns all block green to indicate completion
-  blocks.style.backgroundColor = "#13CE66";
+  completeAnimation()
 }
 
 async function selectionSort(delay = 100) {
@@ -141,7 +153,7 @@ async function selectionSort(delay = 100) {
     blockContainer.children[min] = "#58B7FF";
   }
   // turns all block green to indicate completion
-  blocks.style.backgroundColor = "#13CE66";
+  completeAnimation()
 }
 
 async function cocktailSort(delay = 0) {
@@ -228,5 +240,5 @@ async function cocktailSort(delay = 0) {
     start = start + 1;
   }
   // turns all block green to indicate completion
-  blocks.style.backgroundColor = "#13CE66";
+  completeAnimation()
 }
