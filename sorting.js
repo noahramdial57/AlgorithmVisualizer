@@ -128,7 +128,7 @@ async function insertionSort(delay = 0) {
   completeAnimation()
 }
 
-async function selectionSort(delay = 120) {
+async function selectionSort(delay = 110) {
   for (i = 0; i < numBlocks; i++) {
     let min = i;
     for (j = i + 1; j < numBlocks; j++) {
