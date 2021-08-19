@@ -2,6 +2,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: #333333;
+  overflow: hidden;
 }
 
 ul {
@@ -15,7 +16,7 @@ ul {
 li {
   display: inline;
   float: left;
-  font-size: 20px;
+  font-size: 3.5vh;
 }
 
 li a {
@@ -35,13 +36,13 @@ li a:hover {
   width: 100%;
   margin-left: 30px;
   margin-right: 30px;
-  margin-bottom: 10px;
+  margin-bottom: 0;
 }
 
 .block {
   display: inline-block;
-  margin: 0.15vw;
-  width: 0.35vw;
+  margin: 0.1vw;
+  width: 0.75vw;
   background-color: #55a9e9;
-  transition: 0.2s all ease;
+  transition: 0.8s all ease;
 }
