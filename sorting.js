@@ -64,7 +64,9 @@ async function completeAnimation(delay = 10) {
         resolve();
       }, delay)
     );
-    blockContainer.children[i].style.backgroundColor = "#13CE66"
+    window.requestAnimationFrame(function () {
+      blockContainer.children[i].style.backgroundColor = "#13CE66"
+    });
   }
 }
 
@@ -117,6 +119,7 @@ async function insertionSort(delay = 0) {
       );
 
       swapAnimation(blockContainer.children[j + 1], blockContainer.children[j]);
+      // blockContainer.children[j + 1].style.backgroundColor = "#58B7FF";
     }
     el = blockContainer.children[j + 1].offsetHeight;
   }
@@ -125,7 +128,7 @@ async function insertionSort(delay = 0) {
   completeAnimation()
 }
 
-async function selectionSort(delay = 100) {
+async function selectionSort(delay = 120) {
   for (i = 0; i < numBlocks; i++) {
     let min = i;
     for (j = i + 1; j < numBlocks; j++) {
@@ -149,8 +152,8 @@ async function selectionSort(delay = 100) {
 
     swapAnimation(blockContainer.children[i], blockContainer.children[min]);
 
-    blockContainer.children[i] = "#58B7FF";
-    blockContainer.children[min] = "#58B7FF";
+    blockContainer.children[i].style.backgroundColor = "#58B7FF";
+    blockContainer.children[min].style.backgroundColor = "#58B7FF";
   }
   // turns all block green to indicate completion
   completeAnimation()
