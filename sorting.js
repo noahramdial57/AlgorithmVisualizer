@@ -1,24 +1,26 @@
 let blockContainer = document.querySelector(".block-container");
 let blocks = document.querySelectorAll(".block")
-let numBlocks = 110;
-let min = 1;
-let max = 500;
+let numBlocks = 145;
+let min = 5;
+let max = 80;
 
 // This will generate blocks with a loop and their corresponding values
 // The values of each block will just be its height
 let generateBlocks = () => {
-  for (let i = 0; i < numBlocks; i = i + 1) {
+  for (let i = 0; i < numBlocks; i++) {
     // Every loop this create a random number between min and max
     let blockValue = Math.floor(Math.random() * (max - min) + min)
     // This generates each block with its corresponding size
     let block = document.createElement("div");
     block.classList.add("block");
-    block.style.height = `${blockValue}px`;
-    block.style.transform = `translateX(${i * 10}px)`;
+    block.style.height = `${blockValue}vh`;
+    //block.style.transform = `translateX(${i}vw)`;
 
     blockContainer.appendChild(block);
   }
 }
+
+generateBlocks();
 
 // This function manually swaps two nodes
 function swapNodes(element1, element2) {
@@ -30,7 +32,7 @@ function swapNodes(element1, element2) {
 }
 
 // The animation will be performed by swapping the transform styles of two blocks
-// Them we'll manipulate the dom using insertBefore to swap two nodes
+// Then we'll manipulate the dom using insertBefore to swap two nodes
 async function swapAnimation(element1, element2) {
   return new Promise(resolve => {
     el1Styles = window.getComputedStyle(element1);
@@ -85,9 +87,7 @@ async function bubbleSort(delay = 0) {
   }
 
   // turns all block green to indicate completion
-  for (let i = 0; i < numBlocks; i++) {
-    blockContainer.children[i].style.backgroundColor = "#13CE66";
-  }
+  blocks.style.backgroundColor = "#13CE66";
 }
 
 async function insertionSort(delay = 0) {
@@ -110,9 +110,7 @@ async function insertionSort(delay = 0) {
   }
 
   // turns all block green to indicate completion
-  for (let i = 0; i < numBlocks; i++) {
-    blockContainer.children[i].style.backgroundColor = "#13CE66";
-  }
+  blocks.style.backgroundColor = "#13CE66";
 }
 
 async function selectionSort(delay = 100) {
@@ -142,11 +140,8 @@ async function selectionSort(delay = 100) {
     blockContainer.children[i] = "#58B7FF";
     blockContainer.children[min] = "#58B7FF";
   }
-
   // turns all block green to indicate completion
-  for (let i = 0; i < numBlocks; i++) {
-    blockContainer.children[i].style.backgroundColor = "#13CE66";
-  }
+  blocks.style.backgroundColor = "#13CE66";
 }
 
 async function cocktailSort(delay = 0) {
@@ -232,6 +227,6 @@ async function cocktailSort(delay = 0) {
     // increase the starting point
     start = start + 1;
   }
+  // turns all block green to indicate completion
+  blocks.style.backgroundColor = "#13CE66";
 }
-
-generateBlocks();
