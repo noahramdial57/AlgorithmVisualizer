@@ -1,0 +1,31 @@
+body {
+    background-color: #333333;
+    /* background-color: white; */
+    overflow: hidden;
+}
+
+h1 {
+    text-align: center;
+}
+
+a {
+    color: white;
+}
+
+.sorting {
+    position: fixed;
+    top: 25%;
+    left: 0%;
+    background-color: teal;
+    padding: 10%;
+    margin-left: 10%;
+}
+
+.pathfinding {
+    position: fixed;
+    top: 25%;
+    right: 0%;
+    background-image: url('/android-chrome-192x192.png');
+    padding: 10%;
+    margin-right: 10%;
+}
