@@ -25,7 +25,32 @@ a {
     position: fixed;
     top: 25%;
     right: 0%;
-    background-image: url('/android-chrome-192x192.png');
     padding: 10%;
     margin-right: 10%;
+}
+
+
+.container :hover {
+    animation-name: pop;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+    box-shadow: 1rem 1rem 1rem grey;
+    cursor: pointer;
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(.5);
+        background-image: url('android-chrome-192x192.png');
+    }
+
+    100% {
+        transform: scale(1.2);
+        background-image: url('android-chrome-192x192.png');
+    }
 }
