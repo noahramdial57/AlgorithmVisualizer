@@ -2,10 +2,6 @@ body {
     background-color: #333333;
     /* background-color: white; */
     overflow: hidden;
-    width:100%;
-    margin:auto;
-    min-width:600px;
-    max-width:2000px
 }
 
 ul {
