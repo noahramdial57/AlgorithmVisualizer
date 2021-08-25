@@ -54,12 +54,12 @@ p {
 @keyframes popPathfinding {
     0% {
         transform: scale(.5);
-        background-image: url('android-chrome-192x192.png');
+        background-image: url('pathfinding.png');
     }
 
     100% {
         transform: scale(1.1);
-        background-image: url('android-chrome-192x192.png');
+        background-image: url('pathfinding.png');
     }
 }
 
