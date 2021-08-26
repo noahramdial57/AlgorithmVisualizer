@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/AlgorithmVisualizer/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/AlgorithmVisualizer/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/AlgorithmVisualizer/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/AlgorithmVisualizer/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/AlgorithmVisualizer/android-chrome-512x512.png">
+    <link rel="manifest" href="/AlgorithmVisualizer/manifest.json">>
     <link rel="stylesheet" type="text/css" href="sorting.css">
     <title>Sorting Visualizer</title>
 </head>
@@ -18,10 +20,10 @@
         <ul>
             <li><a href="sorting.html">Sorting Visualizer</a></li>
             <li><a href="sorting.html">Generate New Array!</a></li>
-            <li class='click' style="float:right"><a onclick="cocktailSort()">Cocktail Sort</a></li>
-            <li class='click' style="float:right"><a onclick="selectionSort()">Selection Sort</a></li>
-            <li class='click' style="float:right"><a onclick="insertionSort()">Insertion Sort</a></li>
-            <li class='click' style="float:right"><a onclick="bubbleSort()">Bubble Sort<a></li>
+            <li id='cocktail' style="float:right"><a onclick="cocktailSort()">Cocktail Sort</a></li>
+            <li id='selection' style="float:right"><a onclick="selectionSort()">Selection Sort</a></li>
+            <li id='insertion' style="float:right"><a onclick="insertionSort()">Insertion Sort</a></li>
+            <li id='bubble' style="float:right"><a onclick="bubbleSort()">Bubble Sort<a></li>
         </ul>
     </div>
     <div class="block-container">
