@@ -1,6 +1,6 @@
-let link = document.querySelector(".pathfindingContainer");
+let link = document.getElementById("pathfindingContainer");
 let transition = document.querySelector(".rightTransition");
-let link2 = document.querySelector(".sortingContainer");
+let link2 = document.getElementById("sortingContainer");
 let transition2 = document.querySelector(".leftTransition");
 
 link.addEventListener("click", (e) => {

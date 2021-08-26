@@ -38,7 +38,7 @@ p {
 }
 
 
-.pathfindingContainer :hover {
+#pathfindingContainer :hover {
     animation-name: popPathfinding;
     animation-duration: 0.5s;
     animation-timing-function: ease-out;
@@ -63,7 +63,7 @@ p {
     }
 }
 
-.sortingContainer :hover {
+#sortingContainer :hover {
     animation-name: popSorting;
     animation-duration: 0.5s;
     animation-timing-function: ease-out;
