@@ -1,8 +1,8 @@
 let blockContainer = document.querySelector(".block-container");
 let blocks = document.querySelectorAll(".block")
-let numBlocks = 100;
+let numBlocks = 85;
 let min = 5;
-let max = 80;
+let max = 75;
 
 // This will generate blocks with a loop and their corresponding values
 // The values of each block will just be its height
@@ -63,10 +63,20 @@ async function completeAnimation(delay = 10) {
         resolve();
       }, delay)
     );
-    window.requestAnimationFrame(function () {
-      blockContainer.children[i].style.backgroundColor = "#13CE66"
-    });
+    blockContainer.children[i].style.backgroundColor = "#13CE66"
   }
+}
+
+function disableLinks() {
+  let disable = document.querySelectorAll('.click')
+  disable.classList.remove('click')
+  disable.className = 'disableLink'
+}
+
+function enableLinks() {
+  let disable = document.querySelectorAll('.click')
+  disable.classList.remove('disableLink')
+  disable.className = 'click'
 }
 
 async function bubbleSort(delay = 0) {
@@ -103,7 +113,7 @@ async function bubbleSort(delay = 0) {
   completeAnimation()
 }
 
-async function insertionSort(delay = 0) {
+async function insertionSort(delay = 10) {
   for (let i = 0; i < numBlocks; i++) {
     let el = blockContainer.children[i].offsetHeight;
 
@@ -118,9 +128,11 @@ async function insertionSort(delay = 0) {
       );
 
       swapAnimation(blockContainer.children[j + 1], blockContainer.children[j]);
+      blockContainer.children[j].style.backgroundColor = "#58B7FF";
       // blockContainer.children[j + 1].style.backgroundColor = "#58B7FF";
     }
     el = blockContainer.children[j + 1].offsetHeight;
+
   }
 
   // turns all block green to indicate completion
@@ -244,3 +256,9 @@ async function cocktailSort(delay = 0) {
   // turns all block green to indicate completion
   completeAnimation()
 }
+
+let disable = document.getElementById('cocktail')
+console.log(disable)
+
+disable.className = '.disableLink'
+console.log(disable)
