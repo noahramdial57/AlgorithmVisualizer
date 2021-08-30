@@ -218,7 +218,7 @@ function addEventListeners() {
 
 addEventListeners()
 
-function addObstacleEventListeners() {
+function addWallEventListeners() {
   for (i = 0; i < 20; i++) {
     for (j = 0; j < 60; j++) {
       let node = getNodeId(j, i);
@@ -234,14 +234,14 @@ function addObstacleEventListeners() {
   }
 }
 
-function removeObstacleEventListeners() {
+function removeWallEventListeners() {
   for (i = 0; i < 20; i++) {
     for (j = 0; j < 60; j++) {
       let node = getNodeId(j, i);
       if (node.classList == 'box box-start' || node.classList == 'box box-end') {
         continue
       } else {
-        node.removeEventListener('mouseenter')
+        node.classList.removeEventListener('mouseenter')
       }
     }
   }

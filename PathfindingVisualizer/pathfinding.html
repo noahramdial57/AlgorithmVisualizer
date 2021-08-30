@@ -19,17 +19,40 @@
     <div class='navbar'>
         <ul>
             <li><a href="pathfinding.html">Pathfinding Visualizer</a></li>
-            <li><a onclick='generateRandomObstacles()'>Generate Random Obstacles</a></li>
-            <li><a onclick='clearGrid()'>Clear Grid</a></li>
-            <li><a onclick='clearPath()'>Clear Path</a></li>
-            <li style='float:right'><a onclick='aStar()'>A*</a></li>
-            <li style='float:right'><a onclick='Dijkstra()'>Dijkstra</a></li>
-            <li style='float:right'><a onclick='BFS()'>BFS</a></li>
-            <li style='float:right'><a onclick='DFS()'>DFS</a></li>
+            <!-- <div class="dropdown">
+                <button class="dropbtn">Dropdown
+                  <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                  <a href="#">Link 1</a>
+                  <a href="#">Link 2</a>
+                  <a href="#">Link 3</a>
+                </div>
+              </div> -->
+            <li><a onclick='aStar()'>A*</a></li>
+            <li><a onclick='Dijkstra()'>Dijkstra</a></li>
+            <li><a onclick='BFS()'>BFS</a></li>
+            <li><a onclick='DFS()'>DFS</a></li>
+            <li style='float: right;'><a onclick='clearGrid()'>Clear Grid</a></li>
+            <li style='float: right;'><a onclick='clearPath()'>Clear Path</a></li>
+            <li style='float: right;'><a onclick='generateRandomObstacles()'>Generate Random Walls</a></li>
+            <li style='float: right;'><a onclick='addWallEventListeners()'>Draw Walls</a></li>
         </ul>
     </div>
     <div>
-        <p class="node-bar">Include Node Explanations here</p>
+        <div class='node-bar'>
+            <ul>
+                <li class='nav-box-start'>
+                    <p>Start</p>
+                </li>
+                <li class='nav-box-end'>
+                    <p>End</p>
+                </li>
+                <li class='nav-box-wall'>
+                    <p>Wall</p>
+                </li>
+            </ul>
+        </div>
     </div>
     <div class='grid'></div>
 </body>
