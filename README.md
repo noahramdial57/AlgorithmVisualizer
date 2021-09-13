@@ -15,7 +15,7 @@ Cocktail Sort
 ## Pathfinding Visualizer
 This application supports the following algorithms:
 
-A* (pronounced "A star),
+A*,
 Dijkstra,
 Breadth Fisrt Search,
 Depth First Search
