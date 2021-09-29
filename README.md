@@ -17,6 +17,6 @@ This application supports the following algorithms:
 
 A*,
 Dijkstra,
-Breadth Fisrt Search,
+Breadth First Search,
 Depth First Search
 
